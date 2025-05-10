@@ -30,4 +30,10 @@ class Costumer extends Model
         return $noakhir;
 
     }
+
+    // relasi ke tabel penjualan
+    public function penjualan()
+    {
+        return $this->hasMany(Penjualan::class, 'costumer_id');
+    }
 }
