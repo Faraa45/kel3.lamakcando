@@ -46,6 +46,7 @@ class User extends Authenticatable implements FilamentUser
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
     // tambahan method untuk membatasi akses hanya user group admin saja
     public function canAccessPanel(Panel $panel): bool
     {

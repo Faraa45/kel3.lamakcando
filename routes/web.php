@@ -32,6 +32,12 @@ Route::get('/depan', [App\Http\Controllers\KeranjangController::class, 'daftarme
     ->middleware(\App\Http\Middleware\CostumerMiddleware::class)
     ->name('depan');
 
+// login costumer
+Route::get('/depan', [App\Http\Controllers\KeranjangController::class,'costumer'])
+     ->middleware(\App\Http\Middleware\CostumerMiddleware::class)
+     ->name('depan');
+
+
 Route::get('/login', function () {
     return view('login');
 });
@@ -40,6 +46,10 @@ Route::get('/login', function () {
 Route::post('/login', [App\Http\Controllers\AuthController::class, 'login']);
 
 // Logout
+// tambahan route untuk proses login
+use Illuminate\Http\Request;
+Route::post('/login', [App\Http\Controllers\AuthController::class, 'login']);
+
 Route::get('/logout', function () {
     Auth::logout();
     request()->session()->invalidate();
@@ -90,3 +100,14 @@ Route::get('/proses_kirim_email_pembayaran', [PengirimanEmailController::class, 
 Route::get('/tesrupiah', function() {
     return rupiah(1234567);
 });
+// untuk ubah password
+Route::get('/ubahpassword', [App\Http\Controllers\AuthController::class, 'ubahpassword'])
+    ->middleware('costumer')
+    ->name('ubahpassword');
+Route::post('/prosesubahpassword', [App\Http\Controllers\AuthController::class, 'prosesubahpassword'])
+    ->middleware('costumer')
+;
+// prosesubahpassword
+
+//absensi
+Route::resource('absensi', AbsensiController::class);
