@@ -17,7 +17,11 @@ return new class extends Migration
             $table->string('nama_pegawai');
             $table->string('role');
             $table->string('no_telepon');
+            $table->int('no_rekening');
+            $table->string('email');
             $table->timestamps();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete(); //jika parent di hapus, maka anak akan ikut terhapus
+
         });
     }
 
