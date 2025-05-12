@@ -36,10 +36,25 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
         });
+
         // Redirect berdasarkan role
         \Illuminate\Support\Facades\Auth::user()?->user_group === 'admin'
         ? redirect('/admin') //jika admin maka dilempar ke /admin
         : redirect('/depan'); //jika costumer maka di lempar ke /depan
+
+
+        // Redirect berdasarkan role
+        \Illuminate\Support\Facades\Auth::user()?->user_group === 'admin'
+        ? redirect('/admin') //jika admin maka dilempar ke /admin
+
+        : redirect('/depan'); //jika customer maka di lempar ke /depan
+
     }
     
 }
+
+
+        : redirect('/depan'); //jika costumer maka di lempar ke /depan
+    }
+    }
+

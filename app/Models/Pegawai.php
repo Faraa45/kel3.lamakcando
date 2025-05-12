@@ -29,4 +29,16 @@ class Pegawai extends Model
         $noakhir = 'PGW'.str_pad($noakhir,3,"0",STR_PAD_LEFT); //menyambung dengan string PR-001
         return $noakhir;
 }
+// relasi ke tabel pemgawai
+public function user()
+{
+    return $this->belongsTo(User::class, 'user_id'); 
+    // pastikan 'user_id' adalah nama kolom foreign key
+}
+// Relasi dengan tabel relasi many to many nya
+public function penjualanBarang()
+{
+    return $this->hasMany(PenjualanBarang::class, 'barang_id');
+}
+
 }
