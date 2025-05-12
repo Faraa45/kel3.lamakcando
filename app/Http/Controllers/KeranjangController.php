@@ -86,6 +86,7 @@ class KeranjangController extends Controller
                     ); 
     }
 
+
     // halaman tambah keranjang
     public function tambahKeranjang(Request $request)
     {
@@ -710,4 +711,5 @@ class KeranjangController extends Controller
     }
 
 }
+
 

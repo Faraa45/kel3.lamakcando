@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('costumer', function (Blueprint $table) {
+        Schema::create('penggajian', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeonDelete();
-            $table->string('kode_costumer');
-            $table->string('nama_costumer');
-            $table->string('alamat_costumer');
-            $table->string('no_telp_costumer');
+            $table->foreignId('pegawai_id')->constrained('pegawai')->onDelete('cascade');
+            $table->string('no_penggajian');
+            $table->string('status');
+            $table->date('tgl');
+            $table->decimal('gaji_pokok', 15, 2)->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('costumer');
+        Schema::dropIfExists('penggajian');
     }
 };

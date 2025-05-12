@@ -13,6 +13,10 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 
 class User extends Authenticatable implements FilamentUser
+
+// tambahan untuk membatasi akses panel user filament, hanya admin saja
+
+
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -46,9 +50,9 @@ class User extends Authenticatable implements FilamentUser
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
     // tambahan method untuk membatasi akses hanya user group admin saja
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->user_group === 'admin';
     }
-}
