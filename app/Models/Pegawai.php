@@ -40,4 +40,5 @@ public function penjualanBarang()
 {
     return $this->hasMany(PenjualanBarang::class, 'barang_id');
 }
+
 }

@@ -28,7 +28,7 @@ class AuthController extends Controller
         ]);
 
         // if (Auth::attempt($credentials)) {
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'user_group' => 'costumer'])) {
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'user_group' => 'customer'])) {
             $request->session()->regenerate();
             return redirect()->intended('/depan');
         }
@@ -65,5 +65,3 @@ class AuthController extends Controller
 
         return redirect()->route('depan')->with('success', 'Password berhasil diperbarui!');
     }
-}
-
