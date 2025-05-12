@@ -65,10 +65,16 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
+        // tambahan alias untuk costumer middleware
+        'costumer' => \App\Http\Middleware\CostumerMiddleware::class,
+    ];
+
+
         // tambahan alias untuk customer middleware
         'costumer' => \App\Http\Middleware\CustomerMiddleware::class,
 
          // tambahan alias untuk costumer middleware
         'costumer' => \App\Http\Middleware\CostumerMiddleware::class,
  ];
+
 }

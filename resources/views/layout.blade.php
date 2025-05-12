@@ -1,3 +1,8 @@
+
+@include('layouts/header')
+@yield('konten')
+@include('layouts/footer')
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,3 +21,4 @@
     {{-- <script src="{{ asset('js/app.js') }}"></script> --}}
 </body>
 </html>
+
