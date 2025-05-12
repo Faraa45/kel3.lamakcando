@@ -1,6 +1,6 @@
 @extends('layout')
 
-@section('konten')
+@section('content')
 <body>
 
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
@@ -65,38 +65,18 @@
   <div class="offcanvas-body">
     <div class="order-md-last">
       <h4 class="d-flex justify-content-between align-items-center mb-3">
-        <span class="text-primary">Your cart {{Auth::user()->name}}</span>
-        <span class="badge bg-primary rounded-pill">3</span>
+        <span class="text-primary">Jumlah Menu</span>
+        <span id="cart-count" class="badge bg-primary rounded-pill">{{$jml_menu ?? 0}}</span>
       </h4>
-      <ul class="list-group mb-3">
-        <li class="list-group-item d-flex justify-content-between lh-sm">
-          <div>
-            <h6 class="my-0">Growers cider</h6>
-            <small class="text-body-secondary">Brief description</small>
-          </div>
-          <span class="text-body-secondary">$12</span>
-        </li>
-        <li class="list-group-item d-flex justify-content-between lh-sm">
-          <div>
-            <h6 class="my-0">Fresh grapes</h6>
-            <small class="text-body-secondary">Brief description</small>
-          </div>
-          <span class="text-body-secondary">$8</span>
-        </li>
-        <li class="list-group-item d-flex justify-content-between lh-sm">
-          <div>
-            <h6 class="my-0">Heinz tomato ketchup</h6>
-            <small class="text-body-secondary">Brief description</small>
-          </div>
-          <span class="text-body-secondary">$5</span>
-        </li>
-        <li class="list-group-item d-flex justify-content-between">
-          <span>Total (USD)</span>
-          <strong>$20</strong>
-        </li>
-      </ul>
 
-      <button class="w-100 btn btn-primary btn-lg" type="submit">Continue to checkout</button> <br><br>
+      <li class="list-group-item d-flex justify-content-between">
+            <span>Total (IDR)</span>
+            <strong id="cart-total">{{rupiah($total_tagihan) ?? 0}}</strong>
+      </li>
+
+      <button class="w-100 btn btn-primary btn-lg" type="submit" onclick="window.location.href='/lihatkeranjang'">Lihat Keranjang</button> <br><br>
+      <a href="/depan" class="w-100 btn btn-dark btn-lg" type="submit">Lihat Galeri</a> <br><br>
+      <a href="/lihatriwayat" class="w-100 btn btn-info btn-lg" type="submit">Riwayat Pemesanan</a> <br><br>
       <a href="/logout" class="w-100 btn btn-danger btn-lg" type="submit">Keluar</a>
     </div>
   </div>
@@ -132,22 +112,9 @@
       </div>
       
       <div class="col-sm-6 offset-sm-2 offset-md-0 col-lg-5 d-none d-lg-block">
-        <div class="search-bar row bg-light p-2 my-2 rounded-4">
-          <div class="col-md-4 d-none d-md-block">
-            <select class="form-select border-0 bg-transparent">
-              <option>All Categories</option>
-              <option>Groceries</option>
-              <option>Drinks</option>
-              <option>Chocolates</option>
-            </select>
-          </div>
-          <div class="col-11 col-md-7">
-            <form id="search-form" class="text-center" action="index.html" method="post">
-              <input type="text" class="form-control border-0 bg-transparent" placeholder="Search for more than 20,000 products" />
-            </form>
-          </div>
+        <div class="search-bar row bg-white p-2 my-2 rounded-4">
           <div class="col-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M21.71 20.29L18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a1 1 0 0 0 1.42 0a1 1 0 0 0 0-1.39ZM11 18a7 7 0 1 1 7-7a7 7 0 0 1-7 7Z"/></svg>
+            <!-- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M21.71 20.29L18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a1 1 0 0 0 1.42 0a1 1 0 0 0 0-1.39ZM11 18a7 7 0 1 1 7-7a7 7 0 0 1-7 7Z"/></svg> -->
           </div>
         </div>
       </div>
@@ -167,20 +134,10 @@
           </li>
         </ul>
 
-        <!-- Untuk Icon User -->
-        <ul class="d-flex justify-content-end list-unstyled m-0">
-          <li>
-            <a href="#" class="rounded-circle bg-light p-2 mx-1">
-              <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#user"></use></svg>
-            </a>
-          </li>
-        </ul>
-        <!-- Akhir Icon User -->
-
         <div class="cart text-end d-none d-lg-block dropdown">
           <button class="border-0 bg-transparent d-flex flex-column gap-2 lh-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
-            <span class="fs-6 text-muted dropdown-toggle">Your Cart</span>
-            <span class="cart-total fs-5 fw-bold">$1290.00</span>
+            <span class="fs-6 text-muted dropdown-toggle">Keranjang Anda</span>
+            <span class="cart-total fs-5 fw-bold" id="total_belanja">{{rupiah($total_tagihan) ?? 0}}</span>
           </button>
         </div>
       </div>
@@ -190,62 +147,57 @@
   
 </header>
 
-<!-- Section ubah password -->
-<section class="py-5">
-    <div class="container-fluid">
 
-    <div class="bg-secondary py-5 my-5 rounded-5" style="background: url('images/bg-leaves-img-pattern.png') no-repeat;">
-        <div class="container my-5">
-        <div class="row">
-            <div class="col-md-6 p-5">
-            <div class="section-header">
-                <h2 class="section-title display-4">Ubah <span class="text-primary">Password</span></h2>
-            </div>
-            </div>
-            <div class="col-md-6 p-5">
-                <!-- Tambahan untuk menampilkan error jika ada -->
-                @if (session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                @endif
-                
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-                 <!-- Akhir tambahan menampilkan error -->
-            <form action="{{ url('prosesubahpassword') }}" method="post">
-            @csrf
-                <div class="mb-3">
-                <label for="name" class="form-label">Password</label>
-                <input type="password"
-                    class="form-control form-control-lg" name="password" id="password" placeholder="Masukkan Passsword Baru Anda">
-                </div>
-                
-                <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-dark btn-lg">Submit</button>
-                </div>
-            </form>
-            
-            </div>
-            
-        </div>
-        
-        </div>
-    </div>
+<section class="py-5">
+  <div class="container-fluid">
     
+    <div class="row">
+      <div class="col-md-12">
+          <h4 class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-primary">Riwayat Pemesanan Anda</span>
+          </h4>
+
+        <!-- Tambahan List -->
+          <ul class="list-group mb-3">
+          @php
+            $totalTagihan = 0;
+          @endphp
+          @foreach($transaksi as $p)
+            @php
+              $totalTagihan += $p->tagihan;
+            @endphp
+            <li class="list-group-item d-flex justify-content-between">
+              <div>
+               
+                  <h6 class="my-0">{{ $p->no_faktur }}</h6>
+                  <strong>status: ter{{$p->status}} pada {{$p->tgl}} </strong>
+                  <strong>tagihan: {{rupiah($p->tagihan)}} </strong>
+              
+              <ul class="mt-2 mb-0 ps-3">
+                @foreach($detail_menu[$p->id] ?? [] as $menu)
+                  <li>
+                    {{ $menu->nama_menu }} x {{ $menu->jml }} = {{ rupiah($menu->harga_jual*$menu->jml) }}
+                  </li>
+                @endforeach
+              </ul>
+              </div>
+            </li>
+          @endforeach
+            <li class="list-group-item d-flex justify-content-between bg-light">
+              <div class="text-success">
+                <h6 class="my-0">Total Transaksi</h6>
+              </div>
+              <span><strong>{{ rupiah($totalTagihan) }}</strong></span>
+            </li>
+          </ul>
+          <!-- <button class="w-100 btn btn-primary btn-lg" type="submit">Bayar</button> -->
+         <!-- Akhir tambahan list -->
+
+      </div>
     </div>
+  </div>
 </section>
 
 
-@endsection
-
 
 @endsection
-

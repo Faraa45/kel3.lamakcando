@@ -65,4 +65,3 @@ class AuthController extends Controller
 
         return redirect()->route('depan')->with('success', 'Password berhasil diperbarui!');
     }
-}

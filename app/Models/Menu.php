@@ -32,11 +32,17 @@ class Menu extends Model
 
     }
 
-     // Dengan mutator ini, setiap kali data harga_barang dikirim ke database, koma akan otomatis dihapus.
+     // Dengan mutator ini, setiap kali data harga_menu dikirim ke database, koma akan otomatis dihapus.
      public function setHargaMenuAttribute($value)
      {
          // Hapus koma (,) dari nilai sebelum menyimpannya ke database
          $this->attributes['harga_menu'] = str_replace('.', '', $value);
      }
+
+     // Relasi dengan tabel relasi many to many nya
+    public function penjualanMenu()
+    {
+        return $this->hasMany(PenjualanMenu::class, 'menu_id');
+    }
 
 }
