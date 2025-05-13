@@ -1,10 +1,5 @@
 @extends('layout')
 
-
-@section('konten')
-
-@section('content')
-
 @section('konten')
 
 

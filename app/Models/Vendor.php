@@ -36,4 +36,11 @@ class Vendor extends Model
     {
         return $this->hasMany(BahanBaku::class, 'nomor_vendor', 'nomor_vendor');
     }
+
+    //Relasi ke pembelian
+    public function pembelian()
+    {
+        return $this->hasMany(Pembelian::class, 'vendor_id', 'nomor_vendor');
+    }
+
 }

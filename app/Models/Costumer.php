@@ -36,17 +36,11 @@ class Costumer extends Model
         return $this->belongsTo(User::class, 'user_id');
         //partikan 'user_id' adalah nama kolom foreign key
     }
-    //relasi ke tabel penjualan
-    public function penjualan()
-    {
-        return $this->hasMany(Penjualan::class, 'costumer_id');
-        //partikan 'costumer_id' adalah nama kolom foreign key
-
 
     // relasi ke tabel penjualan
     public function penjualan()
     {
-        return $this->hasMany(Penjualan::class, 'costumer_id');
+        return $this->hasMany(Penjualan::class, 'kode_customer');
 
     }
 }

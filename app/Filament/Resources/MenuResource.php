@@ -96,13 +96,7 @@ class MenuResource extends Resource
 
                       )
 
-                , // nokmr, nm kmr, lntai kmr, foto, hrga kmar, status kmr
-
-                TextInput::make('stok')
-                ->required()
-                ->placeholder('Masukkan stok ') // Placeholder untuk membantu pengguna
-                ->minValue(0),
-
+                ,
 
             ]);
 
@@ -160,8 +154,6 @@ class MenuResource extends Resource
                 ->sortable()
 
                 ,
-
-                TextColumn::make('stok'),
 
             ])
 
