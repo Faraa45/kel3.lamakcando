@@ -68,6 +68,21 @@ class PegawaiResource extends Resource
                     ->placeholder('Masukkan no telepon'),
 
                 TextInput::make('no_rekening')
+
+                    ->required()
+                    ->label('No Rekening')
+                    ->placeholder('Masukkan nomor rekening')
+                    ->numeric() // Validasi hanya menerima angka
+                    ->maxLength(50), // Membatasi panjang nomor rekening sesuai kebutuhan
+
+                // Input untuk Gaji per Hari
+                TextInput::make('gaji_per_hari')
+                    ->label('Gaji per Hari')
+                    ->required()
+                    ->numeric()
+                    ->prefix('Rp')
+                    ->placeholder('Masukkan gaji per hari'),
+
                     ->label('No Rekening')
                     ->numeric()
                     ->placeholder('Masukkan no rekening')
@@ -86,6 +101,7 @@ class PegawaiResource extends Resource
                     ])
                     ->searchable()
                     ->required(),
+
             ]);
     }
 
@@ -99,7 +115,15 @@ class PegawaiResource extends Resource
                 TextColumn::make('role')->label('Role'),
                 TextColumn::make('no_telepon')->label('No Telepon'),
                 TextColumn::make('no_rekening')->label('No Rekening'),
+
+                
+                // Format Gaji per Hari tanpa prefix Rp di table
+                TextColumn::make('gaji_per_hari')
+                    ->label('Gaji per Hari')
+                    ->formatStateUsing(fn ($state) => number_format($state, 0, ',', '.')),
+
                 TextColumn::make('bank')->label('Bank'),
+
             ])
             ->filters([])
             ->actions([
@@ -126,4 +150,3 @@ class PegawaiResource extends Resource
         ];
     }
 }
-

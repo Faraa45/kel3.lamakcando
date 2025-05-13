@@ -33,6 +33,24 @@ Route::get('/logout', function () {
     return redirect('/login');
 })->name('logout');
 
+
+// untuk ubah password
+Route::get('/ubahpassword', [App\Http\Controllers\AuthController::class, 'ubahpassword'])
+    ->middleware('costumer')
+    ->name('ubahpassword');
+Route::post('/prosesubahpassword', [App\Http\Controllers\AuthController::class, 'prosesubahpassword'])
+    ->middleware('costumer')
+;
+// prosesubahpassword
+
+//absensi
+Route::resource('absensi', AbsensiController::class);
+
+Route::resource('penggajian', PenggajianController::class);
+
+Route::get('/laporan-penggajian', [\App\Http\Controllers\PDFController::class, 'penggajianPdf']);
+
+
 // Halaman welcome (opsional)
 Route::get('/welcome', function () {
     return view('welcome');
@@ -72,3 +90,4 @@ Route::middleware(\App\Http\Middleware\CostumerMiddleware::class)->group(functio
 
 // Autorefresh status pembayaran
 Route::get('/cek_status_pembayaran_pg', [KeranjangController::class, 'cek_status_pembayaran_pg']);
+

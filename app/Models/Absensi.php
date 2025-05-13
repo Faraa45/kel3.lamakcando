@@ -11,7 +11,11 @@ class Absensi extends Model
     use HasFactory;
 
     protected $table = 'absensi';
+
+    protected $fillable = ['pegawai_id', 'no_absensi', 'status', 'tgl', 'keterangan'];
+
     protected $fillable = ['pegawai_id', 'no_absensi', 'status', 'tgl', 'durasi_jam_kerja'];
+
 
     public static function getNoAbsensi()
     {
@@ -31,14 +35,12 @@ class Absensi extends Model
 
         return $noakhir;
     }
+// App\Models\Absensi.php
 
-    public function pegawai()
-    {
-        return $this->belongsTo(Pegawai::class);
-    }
-    // Relasi dengan tabel relasi many to many nya
-    public function pengajianAbsen()
-    {
-        return $this->hasMany(PengajianAbsen::class, 'barang_id');
-    }
+public function pegawai()
+{
+    return $this->belongsTo(Pegawai::class, 'pegawai_id');
+}
+
+    
 }
