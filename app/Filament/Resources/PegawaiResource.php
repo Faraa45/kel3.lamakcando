@@ -12,6 +12,9 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 
+use App\Models\User;
+
+
 class PegawaiResource extends Resource
 {
     protected static ?string $model = Pegawai::class;

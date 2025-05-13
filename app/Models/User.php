@@ -56,3 +56,4 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->user_group === 'admin';
     }
+}

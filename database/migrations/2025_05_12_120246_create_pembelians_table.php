@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('menu', function (Blueprint $table) {
+        Schema::create('pembelian', function (Blueprint $table) {
             $table->id();
-            $table->string('no_menu');
-            $table->string('nama_menu');
-            $table->string('kategori_menu');
-            $table->string('foto_menu');
-            $table->integer('stok');
-            $table->string('harga_menu');
+            $table->foreignId('vendor_id')->constrained('vendor')->onDelete('cascade');
+            $table->string('no_faktur_pembelian');
+            $table->string('status');
+            $table->datetime('tanggal'); 
+            $table->decimal('total_tagihan', 15, 2)->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('menu');
+        Schema::dropIfExists('pembelian');
     }
 };

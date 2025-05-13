@@ -53,8 +53,3 @@ class RouteServiceProvider extends ServiceProvider
     
 }
 
-
-        : redirect('/depan'); //jika costumer maka di lempar ke /depan
-    }
-    }
-
