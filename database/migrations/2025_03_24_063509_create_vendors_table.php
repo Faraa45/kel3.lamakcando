@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('nama_vendor');
             $table->enum('status', ['tersedia', 'tidak tersedia']);
             $table->enum('keterangan', ['makanan', 'minuman']);
-            $table->string('tipe');
             $table->text('alamat');
             $table->string('email')->unique();
             $table->timestamps();

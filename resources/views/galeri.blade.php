@@ -1,6 +1,8 @@
 @extends('layout')
 
 @section('konten')
+
+
 <body>
 
 <!-- Tambahan Sweet Alert -->
@@ -95,7 +97,15 @@
         <li class="list-group-item d-flex justify-content-between lh-sm">
           <div>
             <h6 class="my-0">Fresh grapes</h6>
+
             <small class="text-body-secondary">Brief description</small>
+
+
+            <small class="text-body-secondary">Brief description</small> 
+
+            <small class="text-body-secondary">Brief description</small>
+
+
           </div>
           <span class="text-body-secondary">$8</span>
         </li>
@@ -142,7 +152,14 @@
       <div class="col-sm-4 col-lg-3 text-center text-sm-start">
         <div class="main-logo">
           <a href="index.html">
+
+            <img src="foto/logo.png" alt="logo" class="img-fluid">
+
+
+            <img src="foto/logo.png" alt="logo" class="img-fluid">
             <img src="images/logo.png" alt="logo" class="img-fluid">
+
+
           </a>
         </div>
       </div>
@@ -227,7 +244,15 @@
                     <figure>
                       <a href="{{ Storage::url($p->foto) }}" title="Product Title">
                         <img src="{{ Storage::url($p->foto) }}" class="tab-image">
+
+                        <!-- <img src="foto/thumb-bananas.png"  class="tab-image"> -->
+
+
+                        <!-- <img src="foto/thumb-bananas.png"  class="tab-image"> -->
+
                         <!-- <img src="images/thumb-bananas.png"  class="tab-image"> -->
+
+
                       </a>
                     </figure>
                     <h3>{{$p->nama_menu}}</h3>

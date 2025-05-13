@@ -13,6 +13,10 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 
 class User extends Authenticatable implements FilamentUser
+
+// tambahan untuk membatasi akses panel user filament, hanya admin saja
+
+
 {
     use HasApiTokens, HasFactory, Notifiable;
 

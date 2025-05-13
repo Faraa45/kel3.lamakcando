@@ -12,22 +12,35 @@ class Vendor extends Model
     protected $table = 'vendor';
     protected $guarded = [];
 
+    // Mengambil nomor vendor terbaru dan membuat nomor vendor berikutnya
     public static function getNomorVendor()
     {
-        // query kode costumer
-        $sql = "SELECT IFNULL(MAX(nomor_vendor), 'VDR-000') as nomor_vendor
-                FROM vendor";
+        // query kode vendor
+        $sql = "SELECT IFNULL(MAX(nomor_vendor), 'VDR-000') as nomor_vendor FROM vendor";
         $nomorvendor = DB::select($sql);
 
-        // cacah hasilnya
+        // Mengambil hasil query
         foreach ($nomorvendor as $nmrvdr) {
-            $kd = $nmrvdr->nomor_vendor; 
+            $kd = $nmrvdr->nomor_vendor;
         }
-        // Mengambil substring tiga digit akhir dari string PR-000
-        $noawal = substr($kd, -3);
-        $noakhir = $noawal + 1; //menambahkan 1, hasilnya adalah integer cth 1
-        $noakhir = 'VDR' . str_pad($noakhir, 3, "0", STR_PAD_LEFT); //menyambung dengan string CUST-001
-        return $noakhir;
 
+        // Mengambil substring tiga digit akhir dan menambah 1
+        $noawal = substr($kd, -3);
+        $noakhir = $noawal + 1; //menambahkan 1
+        $noakhir = 'VDR' . str_pad($noakhir, 3, "0", STR_PAD_LEFT); // format VDR-001
+        return $noakhir;
     }
+
+    // Relasi ke BahanBaku
+    public function bahanBaku()
+    {
+        return $this->hasMany(BahanBaku::class, 'nomor_vendor', 'nomor_vendor');
+    }
+
+    //Relasi ke pembelian
+    public function pembelian()
+    {
+        return $this->hasMany(Pembelian::class, 'vendor_id', 'nomor_vendor');
+    }
+
 }

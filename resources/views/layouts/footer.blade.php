@@ -64,7 +64,7 @@
           </div>
           <div class="col-md-2 col-sm-6">
             <div class="footer-menu">
-              <h5 class="widget-title">Customer Service</h5>
+              <h5 class="widget-title">Costumer Service</h5>
               <ul class="menu-list list-unstyled">
                 <li class="menu-item">
                   <a href="#" class="nav-link">FAQ</a>
@@ -89,7 +89,7 @@
           </div>
           <div class="col-md-2 col-sm-6">
             <div class="footer-menu">
-              <h5 class="widget-title">Customer Service</h5>
+              <h5 class="widget-title">Costumer Service</h5>
               <ul class="menu-list list-unstyled">
                 <li class="menu-item">
                   <a href="#" class="nav-link">FAQ</a>

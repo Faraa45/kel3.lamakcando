@@ -1,4 +1,8 @@
+
+@extends('layouts')
+
 @extends('layout')
+
 
 @section('konten')
 <body>
@@ -243,4 +247,12 @@
     </div>
 </section>
 
+
 @endsection
+
+@endsection
+
+
+@endsection
+
+
