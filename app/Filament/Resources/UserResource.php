@@ -18,6 +18,15 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Illuminate\Support\Facades\Hash;
 use Filament\Tables\Columns\BadgeColumn;
+// tambahan untuk user exporter
+use Filament\Tables\Actions\ExportAction;
+use Filament\Tables\Actions\ExportBulkAction;
+use App\Filament\Exports\UserExporter;
+// tambahan untuk tombol unduh pdf
+use Filament\Tables\Actions\Action;
+use Barryvdh\DomPDF\Facade\Pdf; // Kalau kamu pakai DomPDF
+use Illuminate\Support\Facades\Storage;
+
 
 class UserResource extends Resource
 {
@@ -81,6 +90,26 @@ class UserResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+            ])
+            ->headerActions([
+                // tombol tambahan export csv dan excel
+                ExportAction::make()->exporter(UserExporter::class)->color('success'),
+                // tombol tambahan export pdf
+                // ✅ Tombol Unduh PDF
+                Action::make('downloadPdf')
+                ->label('Unduh PDF')
+                ->icon('heroicon-o-document-arrow-down')
+                ->color('success')
+                ->action(function () {
+                    $users = User::all();
+
+                    $pdf = Pdf::loadView('pdf.users', ['users' => $users]);
+
+                    return response()->streamDownload(
+                        fn () => print($pdf->output()),
+                        'user-list.pdf'
+                    );
+                })
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -11,12 +11,12 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Illuminate\Support\Facades\DB;
-use Filament\Forms\Components\Select; //untuk penggunaan select
-use Filament\Forms\Components\TextInput; //untuk penggunaan text input
-use Filament\Forms\Components\DateTimePicker; //untuk penggunaan date time picker
-use Filament\Forms\Components\Checkbox; //untuk penggunaan checkbox
-use Filament\Tables\Columns\TextColumn; //untuk tampilan tabel
-
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\TimePicker;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\DatePicker;
 
 class AbsensiResource extends Resource
 {
@@ -31,18 +31,17 @@ class AbsensiResource extends Resource
         return $form
             ->schema([
                 Select::make('pegawai_id')
-                        ->label('Pegawai')
-                        ->options(Pegawai::pluck('nama_pegawai', 'id')->toArray()) // Mengambil data dari tabel
-                                        ->required()
-                                        ->placeholder('Pilih Pegawai') // Placeholder default
-                                    ,
+                    ->label('Pegawai')
+                    ->options(Pegawai::pluck('nama_pegawai', 'id')->toArray())
+                    ->required()
+                    ->placeholder('Pilih Pegawai'),
 
                 TextInput::make('no_absensi')
-                 ->default(fn () => absensi::getNoAbsensi()) 
-                        ->label('No Absensi')
-                        ->required()
-                        ->readonly() // Membuat field menjadi read-only
-                ,
+                    ->default(fn () => Absensi::getNoAbsensi())
+                    ->label('No Absensi')
+                    ->required()
+                    ->readonly(),
+
                 Select::make('status')
                     ->options([
                         'Hadir' => 'Hadir',
@@ -51,28 +50,42 @@ class AbsensiResource extends Resource
                     ])
                     ->required(),
 
-                    DateTimePicker::make('tgl')->default(now()) // Nilai default: waktu sekarang
-                ]);
+                DatePicker::make('tgl')
+                    ->label('Tanggal')
+                    ->default(now()),
+
+                TextInput::make('keterangan')
+                    ->label('Keterangan')
+                    ->placeholder('Isi keterangan jika diperlukan')
+                    ->maxLength(255)
+                    ->columnSpanFull(),
+            ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('pegawai.nama_pegawai') // Relasi ke nama pembeli
+                TextColumn::make('pegawai.nama_pegawai')
                     ->label('Nama Pegawai')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('no_absensi')
+
+                TextColumn::make('no_absensi')
                     ->label('No Absensi')
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('status')
+                TextColumn::make('status')
                     ->label('Status'),
 
-                Tables\Columns\TextColumn::make('tgl')
+                TextColumn::make('tgl')
                     ->label('Tanggal')
                     ->dateTime('d M Y'),
+
+                TextColumn::make('keterangan')
+                    ->label('Keterangan')
+                    ->limit(150)
+                    ->wrap(),
             ])
             ->filters([])
             ->actions([

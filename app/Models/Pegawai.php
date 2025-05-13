@@ -35,9 +35,15 @@ public function user()
     return $this->belongsTo(User::class, 'user_id'); 
     // pastikan 'user_id' adalah nama kolom foreign key
 }
-// Relasi dengan tabel relasi many to many nya
-public function penjualanBarang()
+public function penggajianAbsensi()
+    {
+        return $this->hasMany(PenggajianAbsensi::class, 'pegawai_id');
+    }
+public function penggajian()
 {
-    return $this->hasMany(PenjualanBarang::class, 'barang_id');
+    return $this->hasMany(penggajian::class, 'pegawai_id');
+
 }
+
+
 }
