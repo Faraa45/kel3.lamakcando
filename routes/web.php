@@ -50,4 +50,3 @@ Route::resource('absensi', AbsensiController::class);
 Route::resource('penggajian', PenggajianController::class);
 
 Route::get('/laporan-penggajian', [\App\Http\Controllers\PDFController::class, 'penggajianPdf']);
-
