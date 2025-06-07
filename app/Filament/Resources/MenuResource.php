@@ -62,6 +62,7 @@ class MenuResource extends Resource
                         $set('harga_menu', number_format((int) str_replace('.', '', $state), 0, ',', '.'))
                     ),
 
+
                 // ✅ Tambahkan bagian ini
                 Repeater::make('bahanBaku')
                     ->relationship('bahanBaku')
@@ -78,6 +79,10 @@ class MenuResource extends Resource
                     ])
                     ->columns(2)
                     ->createItemButtonLabel('Tambah Bahan Baku')
+
+                ,
+
+
             ]);
     }
 
@@ -104,6 +109,13 @@ class MenuResource extends Resource
                     ->formatStateUsing(fn (string|int|null $state): string => rupiah($state))
                     ->extraAttributes(['class' => 'text-right'])
                     ->sortable()
+
+                ->label('Harga Menu')
+                ->formatStateUsing(fn (string|int|null $state): string => rupiah($state))
+                ->extraAttributes(['class' => 'text-right']) // Tambahkan kelas CSS untuk rata kanan
+                ->sortable()
+
+                ,
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
