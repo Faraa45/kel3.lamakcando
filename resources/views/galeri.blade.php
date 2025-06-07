@@ -1,6 +1,27 @@
 @extends('layout')
 
+<head>
+    <!-- Tambahan CSS custom untuk logo -->
+    <style>
+        .main-logo {
+            text-align: center;
+        }
+        .main-logo img {
+            display: block;
+            margin: 0 auto;
+        }
+        .main-logo span {
+            /* display: block; */
+        }
+    </style>
+</head>
+
+
 @section('konten')
+
+
+@section('konten')
+
 
 
 <body>
@@ -83,46 +104,20 @@
   <div class="offcanvas-body">
     <div class="order-md-last">
       <h4 class="d-flex justify-content-between align-items-center mb-3">
-        <span class="text-primary">Your cart {{Auth::user()->name}}</span>
-        <span class="badge bg-primary rounded-pill">3</span>
+        <span class="text-primary">Jumlah Barang</span>
+        <span class="badge bg-primary rounded-pill">{{$jmlmenudibeli}}</span>
       </h4>
       <ul class="list-group mb-3">
-        <li class="list-group-item d-flex justify-content-between lh-sm">
-          <div>
-            <h6 class="my-0">Growers cider</h6>
-            <small class="text-body-secondary">Brief description</small>
-          </div>
-          <span class="text-body-secondary">$12</span>
-        </li>
-        <li class="list-group-item d-flex justify-content-between lh-sm">
-          <div>
-            <h6 class="my-0">Fresh grapes</h6>
-
-            <small class="text-body-secondary">Brief description</small>
-
-
-            <small class="text-body-secondary">Brief description</small> 
-
-            <small class="text-body-secondary">Brief description</small>
-
-
-          </div>
-          <span class="text-body-secondary">$8</span>
-        </li>
-        <li class="list-group-item d-flex justify-content-between lh-sm">
-          <div>
-            <h6 class="my-0">Heinz tomato ketchup</h6>
-            <small class="text-body-secondary">Brief description</small>
-          </div>
-          <span class="text-body-secondary">$5</span>
-        </li>
         <li class="list-group-item d-flex justify-content-between">
-          <span>Total (USD)</span>
-          <strong>$20</strong>
+          <span>Total (IDR)</span>
+          <strong>{{ rupiah($total_belanja) }}</strong>
         </li>
       </ul>
 
-      <button class="w-100 btn btn-primary btn-lg" type="submit">Continue to checkout</button> <br><br>
+      <a href="{{ url('/lihatkeranjang') }}" class="w-100 btn btn-primary btn-lg" type="button">Lihat Keranjang</a> <br><br>
+      <a href="{{ url('/depan') }}" class="w-100 btn btn-dark btn-lg" type="button">Lihat Galeri</a> <br><br>
+      <a href="{{ url('/lihatriwayat') }}" class="w-100 btn btn-info btn-lg" type="button">Riwayat Pemesanan</a> <br><br>
+      <a href="{{ url('/berita') }}" class="w-100 btn btn-success btn-lg" type="button">Lihat Berita</a> <br><br>
       <a href="/logout" class="w-100 btn btn-danger btn-lg" type="submit">Keluar</a>
     </div>
   </div>
@@ -150,21 +145,18 @@
     <div class="row py-3 border-bottom">
       
       <div class="col-sm-4 col-lg-3 text-center text-sm-start">
-        <div class="main-logo">
-          <a href="index.html">
-
-            <img src="foto/logo.png" alt="logo" class="img-fluid">
-
-
-            <img src="foto/logo.png" alt="logo" class="img-fluid">
-            <img src="images/logo.png" alt="logo" class="img-fluid">
-
-
+        <div class="main-logo" style="display: inline-block;">
+          <a href="{{ url('/') }}" style="display: flex; align-items: center;">
+            <img src="{{ asset('storage/foto_menu/restaurant_logo.jpeg') }}" alt="Lamak Cando Balala" class="img-fluid" style="max-height: 90px;">
+            <div style="margin-left: 10px;">
+              <span style="font-family: 'Lobster', cursive; font-weight: normal; color: orange; font-size: 1.8rem; white-space: nowrap;">Lamak Cando Balala</span>
+              <span style="font-family: 'Open Sans', sans-serif; font-weight: 400; color: #888; font-size: 0.9rem; display: block; text-transform: uppercase; letter-spacing: 2px;">Rumah Makan Enak</span>
+            </div>
           </a>
         </div>
       </div>
       
-      <div class="col-sm-6 offset-sm-2 offset-md-0 col-lg-5 d-none d-lg-block">
+      <div class="col-sm-6 col-lg-5 d-none d-lg-block d-flex justify-content-center">
         <div class="search-bar row bg-light p-2 my-2 rounded-4">
           <div class="col-md-4 d-none d-md-block">
             <select class="form-select border-0 bg-transparent">
@@ -213,7 +205,7 @@
         <div class="cart text-end d-none d-lg-block dropdown">
           <button class="border-0 bg-transparent d-flex flex-column gap-2 lh-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
             <span class="fs-6 text-muted dropdown-toggle">Your Cart</span>
-            <span class="cart-total fs-5 fw-bold">$1290.00</span>
+            <span class="cart-total fs-5 fw-bold">{{ rupiah($total_belanja) }}</span>
           </button>
         </div>
       </div>
@@ -242,17 +234,8 @@
                   <div class="product-item">
                     <a href="#" class="btn-wishlist"><svg width="24" height="24"><use xlink:href="#heart"></use></svg></a>
                     <figure>
-                      <a href="{{ Storage::url($p->foto) }}" title="Product Title">
-                        <img src="{{ Storage::url($p->foto) }}" class="tab-image">
-
-                        <!-- <img src="foto/thumb-bananas.png"  class="tab-image"> -->
-
-
-                        <!-- <img src="foto/thumb-bananas.png"  class="tab-image"> -->
-
-                        <!-- <img src="images/thumb-bananas.png"  class="tab-image"> -->
-
-
+                      <a href="{{ Storage::url($p->foto_menu) }}" title="Product Title">
+                        <img src="{{ Storage::url($p->foto_menu) }}" class="tab-image" style="max-width: 200px;">   
                       </a>
                     </figure>
                     <h3>{{$p->nama_menu}}</h3>
@@ -272,7 +255,7 @@
                             </button>
                         </span>
                       </div>
-                      <a href="#" class="nav-link">Add to Cart <iconify-icon icon="uil:shopping-cart"></a>
+                      <a href="#" class="nav-link">Add to Cart</a>
                     </div>
                   </div>
                 </div>
@@ -293,3 +276,86 @@
 <!--  -->
 
 @endsection
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Handle quantity buttons
+        document.querySelectorAll('.quantity-left-minus').forEach(button => {
+            button.addEventListener('click', function () {
+                const productId = this.dataset.id;
+                const quantityInput = document.getElementById('quantity-' + productId);
+                let quantity = parseInt(quantityInput.value);
+                if (quantity > 1) {
+                    quantityInput.value = quantity - 1;
+                }
+            });
+        });
+
+        document.querySelectorAll('.quantity-right-plus').forEach(button => {
+            button.addEventListener('click', function () {
+                const productId = this.dataset.id;
+                const quantityInput = document.getElementById('quantity-' + productId);
+                let quantity = parseInt(quantityInput.value);
+                quantityInput.value = quantity + 1;
+            });
+        });
+
+        // Handle Add to Cart button
+        document.querySelectorAll('.nav-link').forEach(button => {
+            if (button.textContent.trim() === 'Add to Cart') {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault(); // Prevent default link behavior
+
+                    const productItem = this.closest('.product-item');
+                    const productId = productItem.querySelector('.quantity-left-minus').dataset.id;
+                    const quantity = productItem.querySelector('.form-control.input-number').value;
+
+                    fetch('/tambah', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            product_id: productId,
+                            quantity: parseInt(quantity)
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                title: 'Berhasil!',
+                                text: data.message,
+                                icon: 'success',
+                                timer: 3000,
+                                showConfirmButton: false
+                            });
+                            // Optionally update cart count/total on success
+                            // You might need to fetch updated cart data or receive it in the response
+                        } else {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: data.message,
+                                icon: 'error',
+                                timer: 3000,
+                                showConfirmButton: false
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Terjadi kesalahan saat menambahkan ke keranjang.',
+                            icon: 'error',
+                            timer: 3000,
+                            showConfirmButton: false
+                        });
+                    });
+                });
+            }
+        });
+    });
+</script>

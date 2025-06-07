@@ -25,8 +25,43 @@ class KeranjangController extends Controller
                         ->first();
         $id_costumer = $costumer->id;
 
-        // ambil data menu
+        // ambil data menu untuk tampilan galeri
         $menu = Menu::all();
+
+        // --- Ambil data item di keranjang yang belum terbayar ---
+        // Ambil ID penjualan yang belum terbayar untuk user ini
+        $penjualan_id = DB::table('penjualan')
+            ->join('pembayaran', 'penjualan.id', '=', 'pembayaran.penjualan_id')
+            ->where('penjualan.costumer_id', $id_costumer)
+            ->where(function($query) {
+                $query->where('pembayaran.gross_amount', 0)
+                      ->orWhere(function($q) {
+                          $q->where('pembayaran.status_code', '!=', 200)
+                            ->where('pembayaran.jenis_pembayaran', 'pg');
+                      });
+            })
+            ->select('penjualan.id')
+            ->first();
+
+        $keranjang_items = collect(); // Inisialisasi koleksi kosong
+
+        if ($penjualan_id) {
+            // Ambil detail menu untuk penjualan yang belum terbayar
+            $keranjang_items = DB::table('penjualan_menu')
+                ->join('menu', 'penjualan_menu.menu_id', '=', 'menu.id')
+                ->where('penjualan_id', $penjualan_id->id)
+                ->select(
+                    'penjualan_menu.id as penjualan_menu_id',
+                    'menu.id as menu_id',
+                    'menu.nama_menu',
+                    'menu.foto_menu as foto',
+                    'penjualan_menu.harga_jual',
+                    'penjualan_menu.jml as jumlah_dibeli',
+                    DB::raw('(penjualan_menu.harga_jual * penjualan_menu.jml) as total_per_item')
+                )
+                ->get();
+        }
+        // --- Akhir ambil data item keranjang ---
 
         // query total belanja yang belum terbayar
         // $menudibeli = Penjualan::where('costumer_id', $id_costumer)
@@ -79,7 +114,8 @@ class KeranjangController extends Controller
         // kirim ke halaman view
         return view('galeri',
                         [ 
-                            'menu'=>$menu,
+                            'menu'=>$menu, // Data semua menu untuk tampilan galeri utama
+                            'keranjang_items' => $keranjang_items, // Data item di keranjang
                             'total_belanja' => $t->total ?? 0,
                             'jmlmenudibeli' => $jmlmenudibeli[0]->total ?? 0
                         ]
@@ -182,9 +218,6 @@ class KeranjangController extends Controller
                 $penjualan->tagihan = $tagihan->total;
                 $penjualan->save();
 
-                // update stok menu kurangi 1
-                Menu::where('id', $menu_id)->decrement('stok', $jumlah);
-
                 // hitung total menu
                 $jmlmenudibeli = DB::table('penjualan')
                             ->join('penjualan_menu', 'penjualan.id', '=', 'penjualan_menu.penjualan_id')
@@ -228,18 +261,11 @@ class KeranjangController extends Controller
                         ->select(DB::raw('id'))
                         ->first();
         $id_costumer = $costumer->id;
-        // dd(var_dump($id_costumer));
 
-        $menu = DB::table('penjualan')
-                        ->join('penjualan_menu', 'penjualan.id', '=', 'penjualan_menu.penjualan_id')
+        // Ambil data penjualan yang belum terbayar untuk user ini
+        $penjualan = DB::table('penjualan')
                         ->join('pembayaran', 'penjualan.id', '=', 'pembayaran.penjualan_id')
-                        ->join('menu', 'penjualan_menu.menu_id', '=', 'menu.id')
-                        ->join('costumer', 'penjualan.costumer_id', '=', 'costumer.id')
-                        ->select('penjualan.id','penjualan.no_faktur','costumer.nama_costumer', 'penjualan_menu.menu_id', 'menu.nama_menu','penjualan_menu.harga_jual', 
-                                 'menu.foto','pembayaran.order_id',
-                                  DB::raw('SUM(penjualan_menu.jml) as total_menu'),
-                                  DB::raw('SUM(penjualan_menu.harga_jual * penjualan_menu.jml) as total_belanja'))
-                        ->where('penjualan.costumer_id', '=',$id_costumer) 
+                        ->where('penjualan.costumer_id', $id_costumer)
                         ->where(function($query) {
                             $query->where('pembayaran.gross_amount', 0)
                                   ->orWhere(function($q) {
@@ -247,34 +273,55 @@ class KeranjangController extends Controller
                                         ->where('pembayaran.jenis_pembayaran', 'pg');
                                   });
                         })
-                        ->groupBy('penjualan.id','penjualan.no_faktur','costumer.nama_costumer','penjualan_menu.menu_id', 'menu.nama_menu','penjualan_menu.harga_jual',
-                                  'menu.foto','pembayaran.order_id',
-                                 )
-                        ->get();
+                        ->select('penjualan.id', 'penjualan.no_faktur', 'pembayaran.order_id')
+                        ->first();
 
-        // hitung jumlah total tagihan
-        $ttl = 0; $jml_brg = 0; $kode_faktur = '';
-        foreach($menu as $p){
-            $ttl += $p->total_belanja;
-            $jml_brg += 1;
-            $kode_faktur = $p->no_faktur;
-            $idpenjualan = $p->id;
-            $odid = $p->order_id;
+        // Definisikan variabel yang diperlukan
+        $idpenjualan = $penjualan ? $penjualan->id : null;
+        $kode_faktur = $penjualan ? $penjualan->no_faktur : null;
+        $odid = $penjualan ? $penjualan->order_id : null;
+
+        $menu = collect(); // Inisialisasi koleksi kosong
+        $ttl = 0; // Inisialisasi total tagihan
+        $jml_brg = 0; // Inisialisasi jumlah barang
+
+        if ($penjualan) {
+            // Ambil detail menu untuk penjualan ini
+            $menu = DB::table('penjualan_menu')
+                ->join('menu', 'penjualan_menu.menu_id', '=', 'menu.id')
+                ->where('penjualan_id', $idpenjualan)
+                ->select(
+                    'penjualan_menu.id as penjualan_menu_id',
+                    'menu.id as menu_id',
+                    'menu.nama_menu',
+                    'menu.foto_menu as foto',
+                    'penjualan_menu.harga_jual',
+                    'penjualan_menu.jml as jumlah_dibeli',
+                    DB::raw('(penjualan_menu.harga_jual * penjualan_menu.jml) as total_per_item')
+                )
+                ->get();
+
+            // Hitung jumlah total tagihan dan jumlah item
+            $ttl = $menu->sum('total_per_item');
+            $jml_brg = $menu->sum('jumlah_dibeli');
         }
 
         // cek dulu apakah sudah ada di midtrans dan belum expired
         $ch = curl_init(); 
         $login = env('MIDTRANS_SERVER_KEY');
         $password = '';
+        
         if(isset($odid)){
             $parts = explode('-', $odid);
-            $substring = $parts[0] . '-' . $parts[1];
-            $orderid = $substring;
+            // Pastikan $parts memiliki setidaknya 2 elemen sebelum mengakses index 1
+            $substring = $parts[0] . (isset($parts[1]) ? '-' . $parts[1] : '');
+            $orderid_midtrans = $substring; // Gunakan nama variabel berbeda untuk menghindari konflik
         }else{
-            $orderid =$kode_faktur.'-'.date('YmdHis'); //FORMAT
+            // Pastikan $kode_faktur sudah terdefinisi sebelum digunakan
+            $orderid_midtrans = ($kode_faktur ?? 'INV').'-'.date('YmdHis'); //FORMAT, gunakan 'INV' sebagai fallback jika kode_faktur null
         }
 
-        $URL =  'https://api.sandbox.midtrans.com/v2/'.$orderid.'/status';
+        $URL =  'https://api.sandbox.midtrans.com/v2/'. $orderid_midtrans .'/status';
         curl_setopt($ch, CURLOPT_URL, $URL);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
@@ -301,7 +348,7 @@ class KeranjangController extends Controller
                     $foo = array(
                             'id'=> $i,
                             'price' => $k->harga_jual,
-                            'quantity' => $k->total_menu,
+                            'quantity' => $k->jumlah_dibeli,
                             'name' => $k->nama_menu,
 
                     );
@@ -347,12 +394,13 @@ class KeranjangController extends Controller
                     ]
                 );
 
-                return view( 'keranjang',
+                return view( 'midtrans.bayar',
                             [
                                 'menu' => $menu,
                                 'total_tagihan' => $ttl,
-                                'jml_menu' => $jml_menu,
+                                'jml_menu' => $jml_brg,
                                 'snap_token' => $snapToken,
+                                'penjualan' => $penjualan
                             ]
                 );
             }else{
@@ -381,7 +429,7 @@ class KeranjangController extends Controller
                         ->join('menu', 'penjualan_menu.menu_id', '=', 'menu.id')
                         ->join('costumer', 'penjualan.costumer_id', '=', 'costumer.id')
                         ->select('penjualan.id','penjualan.no_faktur','costumer.nama_costumer', 'penjualan_menu.menu_id', 'menu.nama_menu','penjualan_menu.harga_jual', 
-                                 'menu.foto',
+                                 'menu.foto_menu',
                                   DB::raw('SUM(penjualan_menu.jml) as total_menu'),
                                   DB::raw('SUM(penjualan_menu.harga_jual * penjualan_menu.jml) as total_belanja'))
                         ->where('penjualan.costumer_id', '=',$id_costumer) 
@@ -393,7 +441,7 @@ class KeranjangController extends Controller
                                   });
                         })
                         ->groupBy('penjualan.id','penjualan.no_faktur','costumer.nama_costumer','penjualan_menu.menu_id', 'menu.nama_menu','penjualan_menu.harga_jual',
-                                  'menu.foto',
+                                  'menu.foto_menu',
                                  )
                         ->get();
 
@@ -409,7 +457,8 @@ class KeranjangController extends Controller
                 'menu' => $menu,
                 'total_tagihan' => $ttl,
                 'jml_brg' => $jml_brg,
-                'snap_token' => $tagihan->transaction_id
+                'snap_token' => $tagihan->transaction_id,
+                'penjualan' => $penjualan
             ]);
         }
 
@@ -484,7 +533,7 @@ class KeranjangController extends Controller
                             ->get();
 
 
-        return response()->json(['success' => true, 'message' => 'Produk berhasil dihapus', 'total' => $tagihan->total, 'jmlmenudibeli'=>$jmlmenudibeli[0]->total ?? 0]);
+        return redirect('/lihatkeranjang')->with('success', 'Produk berhasil dihapus dari keranjang.');
     }
 
     // untuk autorefresh dari server midtrans yang sudah terbayarkan akan diupdatekan ke database
@@ -658,7 +707,7 @@ class KeranjangController extends Controller
                         ->join('menu', 'penjualan_menu.menu_id', '=', 'menu.id')
                         ->join('costumer', 'penjualan.costumer_id', '=', 'costumer.id')
                         ->select('penjualan.id','penjualan.no_faktur','costumer.nama_costumer', 'penjualan_menu.menu_id', 'menu.nama_menu','penjualan_menu.harga_jual', 
-                                 'menu.foto',
+                                 'menu.foto_menu','pembayaran.order_id',
                                   DB::raw('SUM(penjualan_menu.jml) as total_menu'),
                                   DB::raw('SUM(penjualan_menu.harga_jual * penjualan_menu.jml) as total_belanja'))
                         ->where('penjualan.costumer_id', '=',$id_costumer) 
@@ -670,7 +719,7 @@ class KeranjangController extends Controller
                                   });
                         })
                         ->groupBy('penjualan.id','penjualan.no_faktur','costumer.nama_costumer','penjualan_menu.menu_id', 'menu.nama_menu','penjualan_menu.harga_jual',
-                                  'menu.foto',
+                                  'menu.foto_menu','pembayaran.order_id',
                                  )
                         ->get();
 

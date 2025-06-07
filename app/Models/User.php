@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -13,10 +12,6 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 
 class User extends Authenticatable implements FilamentUser
-
-// tambahan untuk membatasi akses panel user filament, hanya admin saja
-
-
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -51,9 +46,24 @@ class User extends Authenticatable implements FilamentUser
         'password' => 'hashed',
     ];
 
-    // tambahan method untuk membatasi akses hanya user group admin saja
+    // membatasi akses hanya user group admin saja ke panel filament
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->user_group === 'admin';
     }
+<<<<<<< HEAD
+
+    // relasi ke tabel costumer (satu user hanya punya satu costumer)
+    public function costumer()
+    {
+        return $this->hasOne(Costumer::class, 'user_id');
+    }
+
+    // relasi ke tabel pembeli (jika masih digunakan)
+    public function pembeli()
+    {
+        return $this->hasOne(Pembeli::class, 'user_id');
+    }
+=======
+>>>>>>> main
 }
