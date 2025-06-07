@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Detail Pembayaran</title>
+    <title>Keranjang Anda</title>
 
     <!-- Bootstrap CSS (CDN) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -15,45 +15,56 @@
     <div class="container mt-4">
         <div class="card">
             <div class="card-header bg-primary text-white">
-                <h4>Detail Pembayaran</h4>
+                <h4>Keranjang Belanja Anda</h4>
             </div>
             <div class="card-body">
-                <p><strong>Kode Faktur:</strong> {{ $penjualan->kode_faktur }}</p>
-                <p><strong>Nama Pembeli:</strong> {{ $penjualan->pembeli->nama_pembeli }}</p>
-                <p><strong>Total Tagihan:</strong> <span class="badge bg-success">Rp. {{ number_format($penjualan->tagihan, 0, ',', '.') }}</span></p>
-                <p><strong>Jumlah Item:</strong> {{ $jumlah_item }}</p>
+                <h2>Keranjang Anda</h2>
 
-                <h5 class="mt-4">Detail Barang yang Dibeli</h5>
-                <table class="table table-bordered table-striped">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>ID</th>
-                            <th>Nama Barang</th>
-                            <th>Harga Barang</th>
-                            <th>Jumlah</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($detail_tagihan as $item)
-                        <tr>
-                            <td>{{ $item->id }}</td>
-                            <td>{{ $item->nama_barang }}</td>
-                            <td>Rp. {{ number_format($item->harga_barang, 0, ',', '.') }}</td>
-                            <td>{{ $item->jumlah }}</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                @if($menu->count() > 0)
+                    @foreach($menu as $item)
+                        <div class="card mb-3">
+                            <div class="row g-0">
+                                <div class="col-md-4">
+                                    <img src="{{ Storage::url($item->foto) }}" class="img-fluid rounded-start" alt="{{ $item->nama_menu }}">
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ $item->nama_menu }}</h5>
+                                        <p class="card-text">Jumlah Pembelian: {{ $item->jumlah_dibeli }} Unit</p>
+                                        <p class="card-text"><strong>Total : Rp {{ number_format($item->total_per_item, 0, ',', '.') }}</strong></p>
+                                        {{-- Form to delete item --}}
+                                        <form action="{{ url('/hapus/' . $item->menu_id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus item ini dari keranjang?');">Hapus</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
 
-                <!-- Tombol Pembayaran -->
-                <div class="text-center mt-4">
-                    <button id="pay-button">Bayar</button>
-                </div>
+                    {{-- You can add a section for the total cart amount here if needed --}}
+                     <li class="list-group-item d-flex justify-content-between">
+                          <span>Total Belanja</span>
+                          <strong>{{ rupiah($total_tagihan) }}</strong>
+                     </li>
+                     <br>
+                    <button id="pay-button" class="w-100 btn btn-primary btn-lg">Lanjutkan Pembayaran</button>
+
+
+                @else
+                    <p>Keranjang Anda kosong.</p>
+                @endif
+
             </div>
         </div>
     </div>
 
-    <!-- Bootstrap JS (CDN) -->
+    <div class="container mt-3 mb-4">
+        <a href="{{ url('/depan') }}" class="text-decoration-none text-primary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="vertical-align: middle; margin-right: 5px;"><path fill="currentColor" d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>Kembali ke Galeri</a>
+    </div>
+
     <!-- Bootstrap JS (CDN) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript">
@@ -63,11 +74,11 @@
         window.snap.pay('{{$snap_token}}', {
         onSuccess: function(result){
             console.log('Pembayaran berhasil:', result);
-            window.location.href = "/pembayaran/autorefresh/";
+            window.location.href = "{{ url('/pembayaran/autorefresh/') }}";
         },
         onPending: function(result){
             console.log('Pembayaran tertunda:', result);
-            window.location.href = "/pembayaran/autorefresh/";
+            window.location.href = "{{ url('/pembayaran/autorefresh/') }}";
         },
         onError: function(result){
             console.log('Pembayaran gagal:', result);

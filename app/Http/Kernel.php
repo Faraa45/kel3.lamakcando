@@ -68,5 +68,5 @@ class Kernel extends HttpKernel
         // tambahan alias untuk costumer middleware
         'costumer' => \App\Http\Middleware\CostumerMiddleware::class,
     ];
+};
 
-}
