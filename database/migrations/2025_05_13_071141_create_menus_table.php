@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('costumer', function (Blueprint $table) {
+        Schema::create('menu', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeonDelete();
-            $table->string('kode_costumer');
-            $table->string('nama_costumer');
-            $table->string('alamat_costumer');
-            $table->string('no_telp_costumer');
+            $table->string('no_menu');
+            $table->string('nama_menu');
+            $table->string('kategori_menu');
+            $table->string('foto_menu');
+            $table->string('harga_menu');
+            $table->integer('stok')->default(0);
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('costumer');
+        Schema::dropIfExists('menu');
     }
 };
