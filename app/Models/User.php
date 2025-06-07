@@ -51,7 +51,6 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->user_group === 'admin';
     }
-<<<<<<< HEAD
 
     // relasi ke tabel costumer (satu user hanya punya satu costumer)
     public function costumer()
@@ -64,6 +63,4 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasOne(Pembeli::class, 'user_id');
     }
-=======
->>>>>>> main
 }
