@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+
 use Illuminate\Database\Eloquent\Model;
 
 class Penggajian extends Model
@@ -11,6 +12,7 @@ class Penggajian extends Model
     protected $fillable = [
         'no_slip_gaji',
         'pegawai_id',
+        'tgl',
         'jumlah_hadir',
         'gaji_per_hari',
         'total_gaji',
@@ -40,14 +42,11 @@ class Penggajian extends Model
 
 
 
-    protected static function booted()
-    {
-    static::creating(function ($penggajian) {
-        if (!$penggajian->no_slip_gaji) {
-            $last = static::latest()->first();
-            $nextId = $last ? $last->id + 1 : 1;
-            $penggajian->no_slip_gaji = 'PGJ-' . now()->format('Ymd') . '-' . str_pad($nextId, 3, '0', STR_PAD_LEFT);
-        }
+protected static function booted()
+{
+    static::created(function ($penggajian) {
+        $penggajian->no_slip_gaji = 'PGJ-' . now()->format('Ymd') . '-' . str_pad($penggajian->id, 3, '0', STR_PAD_LEFT);
+        $penggajian->save();
     });
-    }
+}
 }
