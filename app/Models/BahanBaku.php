@@ -59,4 +59,11 @@ class BahanBaku extends Model
 
         return $kodeBaru;
     }
+
+    public function menu()
+    {
+        return $this->belongsToMany(Menu::class, 'menu_bahan_baku')
+            ->withPivot('jumlah')
+            ->withTimestamps();
+    }
 }

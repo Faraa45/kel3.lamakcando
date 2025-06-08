@@ -42,7 +42,26 @@ class Penggajian extends Model
 
 
 
+
 protected static function booted()
+
+    protected static function booted()
+    {
+    static::creating(function ($penggajian) {
+        if (!$penggajian->no_slip_gaji) {
+            $last = static::latest()->first();
+            $nextId = $last ? $last->id + 1 : 1;
+            $penggajian->no_slip_gaji = 'PGJ-' . now()->format('Ymd') . '-' . str_pad($nextId, 3, '0', STR_PAD_LEFT);
+        }
+    });
+    }
+}
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
+
+class Penggajian extends Model
+
 {
     static::created(function ($penggajian) {
         $penggajian->no_slip_gaji = 'PGJ-' . now()->format('Ymd') . '-' . str_pad($penggajian->id, 3, '0', STR_PAD_LEFT);
