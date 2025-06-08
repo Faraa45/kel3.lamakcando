@@ -66,15 +66,7 @@ class PegawaiResource extends Resource
                     ->required()
                     ->numeric()
                     ->prefix('Rp')
-
                     ->placeholder('Masukkan gaji per hari'),
-
-                    ->placeholder('Masukkan gaji per hari')
-                    ->label('No Rekening')
-                    ->numeric()
-                    ->placeholder('Masukkan no rekening')
-                    ->required(),
-
 
                 Select::make('bank')
                     ->label('Bank')
