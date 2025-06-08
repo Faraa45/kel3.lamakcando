@@ -90,6 +90,33 @@ class MenuResource extends Resource
     {
         return $table
             ->columns([
+
+                TextColumn::make('no_menu')
+                ->label('Id Menu')
+                ->searchable(),
+                ImageColumn::make('foto_menu') // Menampilkan gambar di tabel
+                ->label('Foto Menu')
+                ->size(50), // Menyesuaikan ukuran thumbnail
+                TextColumn::make('nama_menu')
+                ->label('Nama Menu')
+                ->searchable()
+                ->sortable(),
+                BadgeColumn::make('kategori_menu')
+                ->label('Kategori')
+                ->color(fn (string $state): string => match ($state) {
+                    'Makanan' => 'primary',
+                    'Minuman' => 'success',
+                    'Camilan' => 'info',
+                }),
+                TextColumn::make('harga_menu')
+                ->label('Harga Menu')
+                ->formatStateUsing(fn (string|int|null $state): string => rupiah($state))
+                ->extraAttributes(['class' => 'text-right']) // Tambahkan kelas CSS untuk rata kanan
+                ->sortable(),
+            ])
+            ->filters([
+                //
+
                 TextColumn::make('no_menu')->label('Id Menu')->searchable(),
 
                 ImageColumn::make('foto_menu')->label('Foto Menu')->size(50),
@@ -116,6 +143,7 @@ class MenuResource extends Resource
                 ->sortable()
 
                 ,
+
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

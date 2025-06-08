@@ -14,9 +14,6 @@ class Absensi extends Model
 
     protected $fillable = ['pegawai_id', 'no_absensi', 'status', 'tgl', 'keterangan'];
 
-    protected $fillable = ['pegawai_id', 'no_absensi', 'status', 'tgl', 'durasi_jam_kerja'];
-
-
     public static function getNoAbsensi()
     {
         // Query untuk mendapatkan nomor absensi terakhir

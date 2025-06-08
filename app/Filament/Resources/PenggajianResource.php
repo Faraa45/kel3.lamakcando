@@ -64,7 +64,7 @@ class PenggajianResource extends Resource
 
                                     DatePicker::make('tgl')
                                         ->label('Tanggal')
-                                        ->default(now())
+                                        ->default(now()->toDateString())
                                         ->required()
                                         ->reactive()
                                         ->afterStateUpdated(function ($state, callable $set, Get $get) {
