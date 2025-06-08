@@ -23,6 +23,18 @@ class PegawaiResource extends Resource
     {
         return $form
             ->schema([
+                Select::make('user_id')
+                    ->label('User Id')
+                    ->relationship('user', 'email')
+                    ->searchable() // Menambahkan fitur pencarian
+                    ->preload() // Memuat opsi lebih awal untuk pengalaman yang lebih cepat
+                    ->required()
+                    ->live()
+                    ->afterStateUpdated(function ($state, callable $set) {
+                        if ($state) {
+                            $user = User::find($state);
+                            $set('nama_pegawai', $user->name);}}),
+
                 // Relasi ke tabel users
                 TextInput::make('id_pegawai')
                     ->default(fn () => Pegawai::getIdPegawai())
