@@ -40,7 +40,7 @@ class Costumer extends Model
     // relasi ke tabel penjualan
     public function penjualan()
     {
-        return $this->hasMany(Penjualan::class, 'kode_custoer');
+        return $this->hasMany(Penjualan::class, 'kode_costumer');
 
     }
 }
