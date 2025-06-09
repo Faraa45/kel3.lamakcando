@@ -59,7 +59,7 @@ Route::post('/tambah', [App\Http\Controllers\KeranjangController::class, 'tambah
     ->middleware(\App\Http\Middleware\CostumerMiddleware::class);
 Route::get('/lihatkeranjang', [App\Http\Controllers\KeranjangController::class, 'lihatkeranjang'])
     ->middleware(\App\Http\Middleware\CostumerMiddleware::class);
-Route::delete('/hapus/{nenu_id}', [App\Http\Controllers\KeranjangController::class, 'hapus'])
+Route::delete('/hapus/{menu_id}', [App\Http\Controllers\KeranjangController::class, 'hapus'])
     ->middleware(\App\Http\Middleware\CostumerMiddleware::class);
 Route::get('/lihatriwayat', [App\Http\Controllers\KeranjangController::class, 'lihatriwayat'])
     ->middleware(\App\Http\Middleware\CostumerMiddleware::class);
