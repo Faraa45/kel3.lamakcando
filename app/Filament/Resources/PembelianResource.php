@@ -50,6 +50,7 @@ class PembelianResource extends Resource
 
     // tambahan buat grup masterdata
     protected static ?string $navigationGroup = 'Transaksi';
+    public static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {

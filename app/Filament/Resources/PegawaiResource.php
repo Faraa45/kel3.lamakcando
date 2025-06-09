@@ -19,6 +19,13 @@ class PegawaiResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    // tambahan buat label Jurnal Umum
+    protected static ?string $navigationLabel = 'Pegawai';
+
+    // tambahan buat grup masterdata
+    protected static ?string $navigationGroup = 'Master Data';
+    public static ?int $navigationSort = 1;
+
     public static function form(Form $form): Form
     {
         return $form

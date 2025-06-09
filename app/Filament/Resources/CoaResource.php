@@ -2,8 +2,6 @@
 
 namespace App\Filament\Resources;
 
-namespace App\Filament\Resources;
-
 use Filament\Forms\Components\TextInput; //kita menggunakan textinput
 use Filament\Forms\Components\Grid;
 
@@ -24,6 +22,13 @@ class CoaResource extends Resource
     protected static ?string $model = Coa::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    // tambahan buat label Jurnal Umum
+    protected static ?string $navigationLabel = 'COA';
+
+    // tambahan buat grup masterdata
+    protected static ?string $navigationGroup = 'Master Data';
+    public static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
