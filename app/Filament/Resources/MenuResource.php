@@ -24,6 +24,13 @@ class MenuResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-bars-3';
 
+    // tambahan buat label Jurnal Umum
+    protected static ?string $navigationLabel = 'Menu';
+
+    // tambahan buat grup masterdata
+    protected static ?string $navigationGroup = 'Master Data';
+    public static ?int $navigationSort = 1;
+
     public static function form(Form $form): Form
     {
         return $form

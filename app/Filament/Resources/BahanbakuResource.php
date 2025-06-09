@@ -17,9 +17,12 @@ class BahanBakuResource extends Resource
 {
     protected static ?string $model = BahanBaku::class;
 
+    // tambahan buat grup masterdata
+    protected static ?string $navigationGroup = 'Master Data';
     protected static ?string $navigationIcon = 'heroicon-o-archive-box';
-    protected static ?string $navigationLabel = 'Bahan Baku';
     protected static ?string $pluralModelLabel = 'Bahan Baku';
+    public static ?int $navigationSort = 1;
+
 
     public static function form(Form $form): Form
     {

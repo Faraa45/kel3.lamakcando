@@ -38,6 +38,7 @@ class PenggajianResource extends Resource
     protected static ?string $navigationLabel = 'Penggajian';
 
     protected static ?string $navigationGroup = 'Transaksi';
+    public static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
