@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PegawaiResource\Pages;
 use App\Models\Pegawai;
+use App\Models\User;
 use Filament\Forms\Form;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
@@ -17,6 +18,13 @@ class PegawaiResource extends Resource
     protected static ?string $model = Pegawai::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    // tambahan buat label Jurnal Umum
+    protected static ?string $navigationLabel = 'Pegawai';
+
+    // tambahan buat grup masterdata
+    protected static ?string $navigationGroup = 'Master Data';
+    public static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -32,8 +40,9 @@ class PegawaiResource extends Resource
                     ->afterStateUpdated(function ($state, callable $set) {
                         if ($state) {
                             $user = User::find($state);
-                            $set('nama_pegawaii', $user->name);}}),
-                            
+                            $set('nama_pegawai', $user->name);}}),
+
+                // Relasi ke tabel users
                 TextInput::make('id_pegawai')
                     ->default(fn () => Pegawai::getIdPegawai())
                     ->label('Id Pegawai')
@@ -66,9 +75,17 @@ class PegawaiResource extends Resource
 
                 TextInput::make('no_rekening')
                     ->label('No Rekening')
+                    ->required()
                     ->numeric()
-                    ->placeholder('Masukkan no rekening')
-                    ->required(),
+                    ->maxLength(50)
+                    ->placeholder('Masukkan nomor rekening'),
+
+                TextInput::make('gaji_per_hari')
+                    ->label('Gaji per Hari')
+                    ->required()
+                    ->numeric()
+                    ->prefix('Rp')
+                    ->placeholder('Masukkan gaji per hari'),
 
                 Select::make('bank')
                     ->label('Bank')
@@ -96,6 +113,9 @@ class PegawaiResource extends Resource
                 TextColumn::make('role')->label('Role'),
                 TextColumn::make('no_telepon')->label('No Telepon'),
                 TextColumn::make('no_rekening')->label('No Rekening'),
+                TextColumn::make('gaji_per_hari')
+                    ->label('Gaji per Hari')
+                    ->formatStateUsing(fn ($state) => number_format($state, 0, ',', '.')),
                 TextColumn::make('bank')->label('Bank'),
             ])
             ->filters([])
@@ -123,4 +143,3 @@ class PegawaiResource extends Resource
         ];
     }
 }
-

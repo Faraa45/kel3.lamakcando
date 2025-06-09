@@ -24,6 +24,13 @@ class MenuResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-bars-3';
 
+    // tambahan buat label Jurnal Umum
+    protected static ?string $navigationLabel = 'Menu';
+
+    // tambahan buat grup masterdata
+    protected static ?string $navigationGroup = 'Master Data';
+    public static ?int $navigationSort = 1;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -62,6 +69,7 @@ class MenuResource extends Resource
                         $set('harga_menu', number_format((int) str_replace('.', '', $state), 0, ',', '.'))
                     ),
 
+
                 // ✅ Tambahkan bagian ini
                 Repeater::make('bahanBaku')
                     ->relationship('bahanBaku')
@@ -78,6 +86,10 @@ class MenuResource extends Resource
                     ])
                     ->columns(2)
                     ->createItemButtonLabel('Tambah Bahan Baku')
+
+                ,
+
+
             ]);
     }
 
@@ -85,25 +97,33 @@ class MenuResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('no_menu')->label('Id Menu')->searchable(),
 
-                ImageColumn::make('foto_menu')->label('Foto Menu')->size(50),
-
-                TextColumn::make('nama_menu')->label('Nama Menu')->searchable()->sortable(),
-
+                TextColumn::make('no_menu')
+                ->label('Id Menu')
+                ->searchable(),
+                ImageColumn::make('foto_menu') // Menampilkan gambar di tabel
+                ->label('Foto Menu')
+                ->size(50), // Menyesuaikan ukuran thumbnail
+                TextColumn::make('nama_menu')
+                ->label('Nama Menu')
+                ->searchable()
+                ->sortable(),
                 BadgeColumn::make('kategori_menu')
-                    ->label('Kategori')
-                    ->color(fn (string $state): string => match ($state) {
-                        'Makanan' => 'primary',
-                        'Minuman' => 'success',
-                        'Camilan' => 'info',
-                    }),
-
+                ->label('Kategori')
+                ->color(fn (string $state): string => match ($state) {
+                    'Makanan' => 'primary',
+                    'Minuman' => 'success',
+                    'Camilan' => 'info',
+                }),
                 TextColumn::make('harga_menu')
-                    ->label('Harga Menu')
-                    ->formatStateUsing(fn (string|int|null $state): string => rupiah($state))
-                    ->extraAttributes(['class' => 'text-right'])
-                    ->sortable()
+                ->label('Harga Menu')
+                ->formatStateUsing(fn (string|int|null $state): string => rupiah($state))
+                ->extraAttributes(['class' => 'text-right']) // Tambahkan kelas CSS untuk rata kanan
+                ->sortable(),
+            ])
+            ->filters([
+                //
+
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

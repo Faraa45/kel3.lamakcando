@@ -29,11 +29,12 @@ class CostumerResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    //merubah nama label
+    // tambahan buat label Jurnal Umum
     protected static ?string $navigationLabel = 'Costumer';
 
-    //tambahan buat grup masterdata
-    protected static ?string $group = 'Master Data';
+    // tambahan buat grup masterdata
+    protected static ?string $navigationGroup = 'Master Data';
+    public static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
