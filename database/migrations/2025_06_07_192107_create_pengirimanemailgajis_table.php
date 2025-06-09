@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pengirimanemailgaji', function (Blueprint $table) {
-            $table->id();
-            $table->foreign('penggajian_id')->references('id')->on('penggajian')->onDelete('cascade');
-            $table->string('status')->nullable();
-            $table->dateTime('tgl_pengiriman_pesan')->nullable();
-            $table->timestamps();
-        });
+Schema::create('pengirimanemailgaji', function (Blueprint $table) {
+    $table->id();
+    $table->unsignedBigInteger('penggajian_id'); // tambahkan ini
+    $table->foreign('penggajian_id')->references('id')->on('penggajian')->onDelete('cascade');
+    $table->string('status')->nullable();
+    $table->dateTime('tgl_pengiriman_pesan')->nullable();
+    $table->timestamps();
+});
     }
 
     /**

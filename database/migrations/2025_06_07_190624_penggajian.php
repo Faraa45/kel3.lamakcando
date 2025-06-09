@@ -16,6 +16,7 @@ return new class extends Migration
     $table->id();
     $table->integer('no_slip_gaji')->default(0);
     $table->foreignId('pegawai_id')->constrained('pegawai')->onDelete('cascade');
+    $table->date('tgl');    
     $table->integer('jumlah_hadir')->default(0);    
     $table->integer('gaji_per_hari')->default(0);
     $table->integer('total_gaji')->default(0);
