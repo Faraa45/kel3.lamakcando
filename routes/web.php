@@ -124,17 +124,10 @@ Route::get('/contohpdf', [PDFController::class, 'contohpdf']);
 
 // Midtrans
 Route::get('/cekmidtrans', [CobaMidtransController::class, 'cekmidtrans']);
-
-// Pengiriman email
-Route::get('/proses_kirim_email_pembayaran', [PengirimanEmailController::class, 'proses_kirim_email_pembayaran']);
-
 // Tes helper rupiah
 Route::get('/tesrupiah', function() {
     return rupiah(1234567);
 });
-
-// Pengiriman Email
-Route::get('/proses_kirim_email_pembayaran', [PengirimanEmailController::class, 'proses_kirim_email_pembayaran']);
 
 // COA
 Route::resource('coa', CoaController::class);
@@ -173,4 +166,13 @@ Route::get('/test-email', function () {
     return 'Email dikirim';
 });
 
+Route::get('/proses_kirim_email_pembayaran', [PengirimanEmailController::class, 'proses_kirim_email_pembayaran']);
+
+Route::get('/test-email', function () {
+    Mail::raw('Tes kirim email dari Laravel ke Mailtrap.', function ($message) {
+        $message->to('tes@example.com') // bebas, Mailtrap akan tetap menerima
+                ->subject('Tes Email');
+    });
+    return 'Email dikirim';
+});
 

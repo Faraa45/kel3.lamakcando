@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\InvoiceMail;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class PengirimanEmailController extends Controller
 {
@@ -15,86 +16,70 @@ class PengirimanEmailController extends Controller
     {
         date_default_timezone_set('Asia/Jakarta');
 
-        // 1. Query data pembelian yang sudah bayar dan belum dikirim email
         $data = DB::table('pembelian')
-            ->join('pembeli', 'pembelian.pembeli_id', '=', 'pembeli.id')
-            ->join('users', 'pembeli.user_id', '=', 'users.id')
-            ->where('status', 'bayar') // hanya ambil pembelian yang sudah bayar
+            ->join('vendor', 'pembelian.vendor_id', '=', 'vendor.id')
+            ->where('pembelian.status', 'pesan')
+            ->whereNotNull('vendor.email')
             ->whereNotIn('pembelian.id', function ($query) {
                 $query->select('pembelian_id')->from('pengirimanemail');
             })
-            ->select('pembelian.id', 'pembelian.no_faktur', 'users.email', 'pembelian.pembeli_id')
+            ->select(
+                'pembelian.id',
+                'pembelian.no_faktur_pembelian',
+                'vendor.email',
+                'vendor.nama_vendor',
+                'pembelian.total_tagihan',
+                'pembelian.tanggal' // <-- gunakan ini saja
+            )
             ->get();
 
-        foreach ($data as $p) {
-            $id = $p->id;
-            $no_faktur = $p->no_faktur;
-            $email = $p->email;
-            $pembeli_id = $p->pembeli_id;
+        foreach ($data as $pembelian) {
+            $id = $pembelian->id;
+            $no_faktur = $pembelian->no_faktur_pembelian;
+            $email = $pembelian->email;
+            $nama_vendor = $pembelian->nama_vendor;
+            $tanggal = $pembelian->tanggal ?? now(); // <-- gunakan kolom yang ada
 
-            // Query detail barang pembelian
-            $barang = DB::table('pembelian')
-                ->join('pembelian_barang', 'pembelian.id', '=', 'pembelian_barang.pembelian_id')
-                ->join('pembayaran', 'pembelian.id', '=', 'pembayaran.pembelian_id')
-                ->join('barang', 'pembelian_barang.barang_id', '=', 'barang.id')
-                ->join('pembeli', 'pembelian.pembeli_id', '=', 'pembeli.id')
+            // Ambil item pembelian detail
+            $items = DB::table('pembelian_bahan_baku')
+                ->join('bahan_baku', 'pembelian_bahan_baku.bahan_baku_id', '=', 'bahan_baku.id')
                 ->select(
-                    'pembelian.id',
-                    'pembelian.no_faktur',
-                    'pembeli.nama_pembeli',
-                    'pembelian_barang.barang_id',
-                    'barang.nama_barang',
-                    'pembelian_barang.harga_beli',
-                    'barang.foto',
-                    DB::raw('SUM(pembelian_barang.jml) as total_barang'),
-                    DB::raw('SUM(pembelian_barang.harga_beli * pembelian_barang.jml) as total_belanja')
+                    'bahan_baku.nama_bahan as nama_bahan_baku',
+                    'pembelian_bahan_baku.harga_beli',
+                    DB::raw('SUM(pembelian_bahan_baku.jumlah) as total_bahan_baku')
                 )
-                ->where('pembelian.pembeli_id', '=', $pembeli_id)
-                ->where('pembelian.id', '=', $id)
-                ->groupBy(
-                    'pembelian.id',
-                    'pembelian.no_faktur',
-                    'pembeli.nama_pembeli',
-                    'pembelian_barang.barang_id',
-                    'barang.nama_barang',
-                    'pembelian_barang.harga_beli',
-                    'barang.foto'
-                )
+                ->where('pembelian_bahan_baku.pembelian_id', $id)
+                ->groupBy('bahan_baku.nama_bahan', 'pembelian_bahan_baku.harga_beli')
                 ->get();
 
-            // Generate PDF invoice
+            $total = $items->sum(function ($item) {
+                return $item->harga_beli * $item->total_bahan_baku;
+            });
+
+            // Generate PDF
             $pdf = Pdf::loadView('pdf.invoice', [
-                'no_faktur' => $p->no_faktur,
-                'nama_pembeli' => $barang[0]->nama_pembeli ?? '-',
-                'items' => $barang,
-                'total' => $barang->sum('total_belanja'),
-                'tanggal' => now()->format('d-M-Y'),
+                'no_faktur' => $no_faktur,
+                'nama_vendor' => $nama_vendor,
+                'tanggal' => Carbon::parse($tanggal)->format('d M Y'),
+                'items' => $items,
+                'total' => $total,
             ]);
 
-            // Data untuk email
-            $dataAtributPelanggan = [
-                'customer_name' => $barang[0]->nama_pembeli,
-                'invoice_number' => $p->no_faktur
-            ];
-
             // Kirim email
-            Mail::to($email)->send(new InvoiceMail($dataAtributPelanggan, $pdf->output()));
+            Mail::to($email)->send(new InvoiceMail([
+                'nama_vendor' => $nama_vendor,
+                'no_faktur' => $no_faktur,
+            ], $pdf->output()));
 
-            // Delay 5 detik antar email
-            sleep(5);
-
-            // Catat pengiriman
+            // Simpan status pengiriman
             Pengirimanemail::create([
                 'pembelian_id' => $id,
-                'status' => 'sudah terkirim',
+                'status' => 'terkirim',
                 'tgl_pengiriman_pesan' => now(),
             ]);
         }
-
         return view('autorefresh_email');
     }
-}
+            
 
-// proses pengiriman email
-use App\Http\Controllers\PengirimanEmailController;
-Route::get('/proses_kirim_email_pembayaran', [PengirimanEmailController::class, 'proses_kirim_email_pembayaran']);
+}
