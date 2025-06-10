@@ -136,7 +136,7 @@ class KeranjangController extends Controller
             $id_user = Auth::user()->id;
 
             // dapatkan id_costumer dari user_id di tabel users sesuai data yang login
-            $costumer = costumer::where('user_id', $id_user)
+            $costumer = Costumer::where('user_id', $id_user)
                             ->select(DB::raw('id'))
                             ->first();
             $id_costumer = $costumer->id;
@@ -760,5 +760,3 @@ class KeranjangController extends Controller
     }
 
 }
-
-
