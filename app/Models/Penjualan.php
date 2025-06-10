@@ -38,7 +38,7 @@ class Penjualan extends Model
     // relasi ke tabel costumer
     public function costumer()
     {
-        return $this->belongsTo(costumer::class, 'kode_costumer');
+        return $this->belongsTo(costumer::class, 'costumer_id');
     }
 
     // relasi ke tabel penjualan menu
