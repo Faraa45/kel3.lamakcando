@@ -7,7 +7,7 @@
         body { font-family: sans-serif; text-align: center; padding-top: 50px; }
     </style>
 </head>
-<body>
+<body>*
     <h2>Slip Gaji Berhasil Dikirim</h2>
     <p>Anda akan diarahkan kembali dalam 5 detik...</p>
 </body>
