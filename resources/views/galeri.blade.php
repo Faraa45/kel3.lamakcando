@@ -112,7 +112,6 @@
       <a href="{{ url('/lihatkeranjang') }}" class="w-100 btn btn-primary btn-lg" type="button">Lihat Keranjang</a> <br><br>
       <a href="{{ url('/depan') }}" class="w-100 btn btn-dark btn-lg" type="button">Lihat Galeri</a> <br><br>
       <a href="{{ url('/lihatriwayat') }}" class="w-100 btn btn-info btn-lg" type="button">Riwayat Pemesanan</a> <br><br>
-      <a href="{{ url('/berita') }}" class="w-100 btn btn-success btn-lg" type="button">Lihat Berita</a> <br><br>
       <a href="/logout" class="w-100 btn btn-danger btn-lg" type="submit">Keluar</a>
     </div>
   </div>
@@ -142,7 +141,7 @@
       <div class="col-sm-4 col-lg-3 text-center text-sm-start">
         <div class="main-logo" style="display: inline-block;">
           <a href="{{ url('/') }}" style="display: flex; align-items: center;">
-            <img src="{{ asset('storage/foto_menu/taurant_logo.jrespeg') }}" alt="Lamak Cando Balala" class="img-fluid" style="max-height: 90px;">
+            <img src="{{ asset('storage/foto_menu/restaurant_logo.jpeg') }}" alt="Lamak Cando Balala" class="img-fluid" style="max-height: 90px;">
             <div style="margin-left: 10px;">
               <span style="font-family: 'Lobster', cursive; font-weight: normal; color: orange; font-size: 1.8rem; white-space: nowrap;">Lamak Cando Balala</span>
               <span style="font-family: 'Open Sans', sans-serif; font-weight: 400; color: #888; font-size: 0.9rem; display: block; text-transform: uppercase; letter-spacing: 2px;">Rumah Makan Enak</span>

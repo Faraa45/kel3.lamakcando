@@ -27,6 +27,7 @@ use Exception;
 use App\Models\BahanBaku;
 use Filament\Tables\Actions\BulkAction;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Log;
 
 class PenjualanResource extends Resource
 {
@@ -83,8 +84,8 @@ class PenjualanResource extends Resource
                                             $set('harga_beli', $menu?->harga_menu ?? 0);
                                             $set('harga_jual', $menu?->harga_menu * 1.2 ?? 0);
                                         }),
-                                    TextInput::make('harga_beli')->label('Harga Beli')->numeric()->readonly()->hidden()->dehydrated(),
-                                    TextInput::make('harga_jual')->label('Harga Menu')->numeric()->readonly()->dehydrated(),
+                                    TextInput::make('harga_beli')->label('Harga Beli')->numeric()->readonly()->hidden(),
+                                    TextInput::make('harga_jual')->label('Harga Menu')->numeric()->readonly(),
                                     TextInput::make('jml')->label('Jumlah')->default(1)->reactive()->required(),
                                     DatePicker::make('tgl')->default(today())->required(),
                                 ])
@@ -105,7 +106,7 @@ class PenjualanResource extends Resource
                                             DB::beginTransaction();
 
                                             // Simpan Penjualan
-                                            $penjualan = Penjualan::updateOrCreate(
+                                            $penjualan = \App\Models\Penjualan::updateOrCreate(
                                                 ['no_faktur' => $get('no_faktur')],
                                                 [
                                                     'tgl' => $get('tgl'),
@@ -117,31 +118,54 @@ class PenjualanResource extends Resource
 
                                             // Simpan Menu dan Kurangi Stok
                                             foreach ($get('items') as $item) {
-                                                \App\Models\PenjualanMenu::updateOrCreate(
+                                                $penjualanMenu = \App\Models\PenjualanMenu::updateOrCreate(
                                                     [
                                                         'penjualan_id' => $penjualan->id,
                                                         'menu_id' => $item['menu_id'],
                                                     ],
                                                     [
-                                                        'harga_beli' => $item['harga_beli'],
-                                                        'harga_jual' => $item['harga_jual'],
+                                                        'harga_beli' => $item['harga_beli'] ?? 0,
+                                                        'harga_jual' => $item['harga_jual'] ?? 0,
                                                         'jml' => $item['jml'],
                                                         'tgl' => $item['tgl'],
                                                     ]
                                                 );
+
+                                                // Kurangi stok bahan baku sesuai menu yang dibeli
+                                                $menu = \App\Models\Menu::with('bahanBaku')->find($item['menu_id']);
+                                                if ($menu) {
+                                                    foreach ($menu->bahanBaku as $bahan) {
+                                                        Log::info('Bahan Baku object before decrement:', $bahan->toArray());
+                                                        $jumlahPerMenu = $bahan->pivot->jumlah;
+                                                        $jumlahTotal = $jumlahPerMenu * $item['jml'];
+                                                        if ($bahan->stok < $jumlahTotal) {
+                                                            throw new \Exception("Stok bahan baku '{$bahan->nama_bahan}' tidak cukup.");
+                                                        }
+                                                        $bahan->decrement('stok', $jumlahTotal);
+                                                    }
+                                                }
                                             }
 
                                             // Hitung Tagihan
-                                            $totalTagihan = PenjualanMenu::where('penjualan_id', $penjualan->id)
+                                            $totalTagihan = \App\Models\PenjualanMenu::where('penjualan_id', $penjualan->id)
                                                 ->sum(DB::raw('harga_jual * jml'));
 
                                             $penjualan->update(['tagihan' => $totalTagihan]);
                                             $set('tagihan', $totalTagihan);
 
                                             DB::commit();
+
+                                            \Filament\Notifications\Notification::make()
+                                                ->title('Pesanan Berhasil Diproses!')
+                                                ->success()
+                                                ->send();
                                         } catch (Exception $e) {
                                             DB::rollBack();
-                                            throw $e;
+                                            \Filament\Notifications\Notification::make()
+                                                ->title('Terjadi Kesalahan!')
+                                                ->body($e->getMessage())
+                                                ->danger()
+                                                ->send();
                                         }
                                     }),
                             ])

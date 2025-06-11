@@ -619,12 +619,42 @@ class KeranjangController extends Controller
                     if($outputjson['status_code']=='200'){
                         $affected = DB::update(
                             'update penjualan 
-                             set status = "bayar"
-                             where no_faktur = ?',
+                             set status = "bayar"\n                             where no_faktur = ?',
                             [
                                 $kode_faktur
                             ]
                         );
+
+                        // Ambil penjualan_id yang baru saja statusnya diubah menjadi 'bayar'
+                        $penjualan = Penjualan::where('no_faktur', $kode_faktur)->first();
+                        
+                        if ($penjualan) {
+                            // Ambil semua menu yang terkait dengan penjualan ini
+                            $penjualanMenus = PenjualanMenu::where('penjualan_id', $penjualan->id)->get();
+
+                            foreach ($penjualanMenus as $penjualanMenu) {
+                                $menuId = $penjualanMenu->menu_id;
+                                $quantitySold = $penjualanMenu->jml;
+
+                                // Ambil bahan baku yang digunakan untuk menu ini
+                                $menuBahanBakus = MenuBahanBaku::where('menu_id', $menuId)->get();
+
+                                foreach ($menuBahanBakus as $menuBahanBaku) {
+                                    $bahanBakuId = $menuBahanBaku->bahan_baku_id;
+                                    $bahanBakuQuantity = $menuBahanBaku->jumlah;
+
+                                    // Hitung total bahan baku yang terpakai
+                                    $totalBahanBakuUsed = $quantitySold * $bahanBakuQuantity;
+
+                                    // Update stok bahan baku
+                                    $bahanBaku = BahanBaku::find($bahanBakuId);
+                                    if ($bahanBaku) {
+                                        $bahanBaku->stok -= $totalBahanBakuUsed;
+                                        $bahanBaku->save();
+                                    }
+                                }
+                            }
+                        }
                     }
                     // 
                 }

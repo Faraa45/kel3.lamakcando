@@ -140,7 +140,11 @@ Route::resource('absensi', AbsensiController::class);
 Route::middleware(\App\Http\Middleware\CostumerMiddleware::class)->group(function () {
 
     // Halaman costumer
+
+    Route::get('/depan', [KeranjangController::class, 'daftarmenu'])->name('depan');
+
     //Route::get('/depan', [KeranjangController::class, 'costumer'])->name('depan');
+
 
     // Ubah password
     Route::get('/ubahpassword', [AuthController::class, 'ubahpassword'])->name('ubahpassword');

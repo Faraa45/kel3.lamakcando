@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('no_menu');
             $table->string('nama_menu');
             $table->string('kategori_menu');
-            $table->string('foto_menu');
+            $table->string('foto_menu')->nullable();
             $table->string('harga_menu');
             $table->integer('stok')->default(0);
             $table->timestamps();
