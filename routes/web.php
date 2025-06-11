@@ -124,6 +124,7 @@ Route::get('/contohpdf', [PDFController::class, 'contohpdf']);
 
 // Midtrans
 Route::get('/cekmidtrans', [CobaMidtransController::class, 'cekmidtrans']);
+
 // Tes helper rupiah
 Route::get('/tesrupiah', function() {
     return rupiah(1234567);
@@ -139,7 +140,7 @@ Route::resource('absensi', AbsensiController::class);
 Route::middleware(\App\Http\Middleware\CostumerMiddleware::class)->group(function () {
 
     // Halaman costumer
-    Route::get('/depan', [KeranjangController::class, 'costumer'])->name('depan');
+    //Route::get('/depan', [KeranjangController::class, 'costumer'])->name('depan');
 
     // Ubah password
     Route::get('/ubahpassword', [AuthController::class, 'ubahpassword'])->name('ubahpassword');
@@ -148,7 +149,7 @@ Route::middleware(\App\Http\Middleware\CostumerMiddleware::class)->group(functio
     // Keranjang
     Route::post('/tambah', [KeranjangController::class, 'tambahKeranjang']);
     Route::get('/lihatkeranjang', [KeranjangController::class, 'lihatkeranjang']);
-    Route::delete('/hapus/{nenu_id}', [KeranjangController::class, 'hapus']);
+    Route::delete('/hapus/{menu_id}', [KeranjangController::class, 'hapus']);
     Route::get('/lihatriwayat', [KeranjangController::class, 'lihatriwayat']);
 });
 
@@ -175,4 +176,16 @@ Route::get('/test-email', function () {
     });
     return 'Email dikirim';
 });
+
+use App\Http\Controllers\PengirimanEmailpenjualanController;
+Route::get('/proses_kirim_email_invoice_penjualan', [PengirimanEmailpenjualanController::class, 'proses_kirim_email_invoice_penjualan']);
+
+Route::get('/test-email', function () {
+    Mail::raw('Tes kirim email dari Laravel ke Mailtrap.', function ($message) {
+        $message->to('tes@example.com') // bebas, Mailtrap akan tetap menerima
+                ->subject('Tes Email');
+    });
+    return 'Email dikirim';
+});
+
 
