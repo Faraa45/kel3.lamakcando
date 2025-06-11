@@ -17,7 +17,7 @@ class PegawaiResource extends Resource
 {
     protected static ?string $model = Pegawai::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
 
     // tambahan buat label Jurnal Umum
     protected static ?string $navigationLabel = 'Pegawai';
@@ -40,7 +40,8 @@ class PegawaiResource extends Resource
                     ->afterStateUpdated(function ($state, callable $set) {
                         if ($state) {
                             $user = User::find($state);
-                            $set('nama_pegawai', $user->name);}}),
+                            $set('nama_pegawai', $user->name);
+                            $set('email', $user->email);}}),
 
                 // Relasi ke tabel users
                 TextInput::make('id_pegawai')

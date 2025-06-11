@@ -790,5 +790,3 @@ class KeranjangController extends Controller
     }
 
 }
-
-
