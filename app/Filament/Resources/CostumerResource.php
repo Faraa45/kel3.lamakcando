@@ -27,7 +27,7 @@ class CostumerResource extends Resource
 {
     protected static ?string $model = Costumer::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user';
 
     // tambahan buat label Jurnal Umum
     protected static ?string $navigationLabel = 'Costumer';
