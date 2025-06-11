@@ -41,9 +41,8 @@ class AdminPanelProvider extends PanelProvider
                 Widgets\FilamentInfoWidget::class,
 
                 \App\Filament\Widgets\TotalPenjualanPerBulanChart::class,
+                \App\Filament\Widgets\PenjualanPerMenuChart::class,
 
-                \App\Filament\Widgets\Pen
-                \App\Filament\Widgets\Penjua
 
             ])
             ->middleware([
