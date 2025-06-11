@@ -10,7 +10,7 @@ class BahanBakuController extends Controller
     /**
      * Tampilkan daftar semua bahan baku.
      */
-    public function index()
+    public function index() 
     {
         $data = BahanBaku::all();
         return view('bahan_baku.index', compact('data'));

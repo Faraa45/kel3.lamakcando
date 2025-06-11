@@ -42,8 +42,7 @@ class MenuResource extends Resource
                     ->readonly(),
 
                 FileUpload::make('foto_menu')
-                    ->directory('foto_menu')
-                    ->required(),
+                    ->directory('foto_menu'),
 
                 TextInput::make('nama_menu')
                     ->required()
@@ -62,7 +61,7 @@ class MenuResource extends Resource
                     ->required()
                     ->minValue(0)
                     ->reactive()
-                    ->extraAttributes(['id' => 'harga-menu'])
+                    ->extraAttributes(['id' => 'harga_menu'])
                     ->placeholder('Masukkan harga menu')
                     ->live()
                     ->afterStateUpdated(fn ($state, callable $set) =>
@@ -70,9 +69,8 @@ class MenuResource extends Resource
                     ),
 
 
-                // ✅ Tambahkan bagian ini
+                // ✅ Kembalikan ke penanganan otomatis Filament untuk relasi bahanBaku
                 Repeater::make('bahanBaku')
-                    ->relationship('bahanBaku')
                     ->label('Bahan Baku Digunakan')
                     ->schema([
                         Select::make('bahan_baku_id')
@@ -86,7 +84,6 @@ class MenuResource extends Resource
                     ])
                     ->columns(2)
                     ->createItemButtonLabel('Tambah Bahan Baku')
-
                 ,
 
 

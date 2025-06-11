@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('pengirimanemailgaji', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('penggajian_id');
             $table->foreign('penggajian_id')->references('id')->on('penggajian')->onDelete('cascade');
             $table->string('status')->nullable();
             $table->dateTime('tgl_pengiriman_pesan')->nullable();

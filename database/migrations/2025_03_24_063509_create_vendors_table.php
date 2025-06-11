@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nomor_vendor');
             $table->string('nama_vendor');
+            $table->string('tipe')->nullable();
             $table->enum('status', ['tersedia', 'tidak tersedia']);
             $table->enum('keterangan', ['makanan', 'minuman']);
             $table->text('alamat');

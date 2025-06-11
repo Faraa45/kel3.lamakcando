@@ -47,7 +47,7 @@ class Menu extends Model
 
     public function bahanBaku()
     {
-        return $this->belongsToMany(BahanBaku::class, 'menu_bahan_baku')
+        return $this->belongsToMany(BahanBaku::class, 'menu_bahan_baku', 'menu_id', 'bahan_baku_id')
             ->withPivot('jumlah')
             ->withTimestamps();
     }
