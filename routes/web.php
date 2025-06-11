@@ -113,8 +113,6 @@ Route::resource('absensi', AbsensiController::class);
 Route::resource('penggajian', PenggajianController::class);
 
 Route::get('/laporan-penggajian', [\App\Http\Controllers\PDFController::class, 'penggajianPdf']);
-
-
 // Halaman welcome (opsional)
 Route::get('/welcome', function () {
     return view('welcome');
@@ -131,9 +129,6 @@ Route::get('/cekmidtrans', [CobaMidtransController::class, 'cekmidtrans']);
 Route::get('/tesrupiah', function() {
     return rupiah(1234567);
 });
-
-// Pengiriman Email
-Route::get('/proses_kirim_email_pembayaran', [PengirimanEmailController::class, 'proses_kirim_email_pembayaran']);
 
 // COA
 Route::resource('coa', CoaController::class);
@@ -160,6 +155,27 @@ Route::middleware(\App\Http\Middleware\CostumerMiddleware::class)->group(functio
 
 // Autorefresh status pembayaran
 Route::get('/cek_status_pembayaran_pg', [KeranjangController::class, 'cek_status_pembayaran_pg']);
+// proses pengiriman email
+use App\Http\Controllers\PengirimanEmailGajiController;
+Route::get('/proses_kirim_email_pembayaran_gaji', [PengirimanEmailGajiController::class, 'proses_kirim_email_pembayaran_gaji']);
+
+Route::get('/test-email', function () {
+    Mail::raw('Tes kirim email dari Laravel ke Mailtrap.', function ($message) {
+        $message->to('tes@example.com') // bebas, Mailtrap akan tetap menerima
+                ->subject('Tes Email');
+    });
+    return 'Email dikirim';
+});
+
+Route::get('/proses_kirim_email_pembayaran', [PengirimanEmailController::class, 'proses_kirim_email_pembayaran']);
+
+Route::get('/test-email', function () {
+    Mail::raw('Tes kirim email dari Laravel ke Mailtrap.', function ($message) {
+        $message->to('tes@example.com') // bebas, Mailtrap akan tetap menerima
+                ->subject('Tes Email');
+    });
+    return 'Email dikirim';
+});
 
 use App\Http\Controllers\PengirimanEmailpenjualanController;
 Route::get('/proses_kirim_email_invoice_penjualan', [PengirimanEmailpenjualanController::class, 'proses_kirim_email_invoice_penjualan']);

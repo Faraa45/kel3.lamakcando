@@ -34,6 +34,7 @@ class PenjualanResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
     protected static ?string $navigationLabel = 'Penjualan';
     protected static ?string $navigationGroup = 'Transaksi';
+    public static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {

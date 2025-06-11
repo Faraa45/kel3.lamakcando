@@ -18,10 +18,13 @@ use Filament\Tables\Filters\SelectFilter;
 class VendorResource extends Resource
 {
     protected static ?string $model = Vendor::class;
-    protected static ?string $navigationIcon = 'heroicon-o-building-office';
+    protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
+    // tambahan buat grup masterdata
+    protected static ?string $navigationGroup = 'Master Data';
     protected static ?string $navigationLabel = 'Data Vendor';
+
     protected static ?string $modelLabel = 'Vendor';
-    protected static ?string $pluralModelLabel = 'Vendors';
+    public static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {

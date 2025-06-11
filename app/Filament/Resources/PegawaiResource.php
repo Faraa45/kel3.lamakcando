@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PegawaiResource\Pages;
 use App\Models\Pegawai;
+use App\Models\User;
 use Filament\Forms\Form;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
@@ -12,14 +13,18 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 
-use App\Models\User;
-
-
 class PegawaiResource extends Resource
 {
     protected static ?string $model = Pegawai::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
+
+    // tambahan buat label Jurnal Umum
+    protected static ?string $navigationLabel = 'Pegawai';
+
+    // tambahan buat grup masterdata
+    protected static ?string $navigationGroup = 'Master Data';
+    public static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -35,8 +40,10 @@ class PegawaiResource extends Resource
                     ->afterStateUpdated(function ($state, callable $set) {
                         if ($state) {
                             $user = User::find($state);
-                            $set('nama_pegawaii', $user->name);}}),
-                            
+                            $set('nama_pegawai', $user->name);
+                            $set('email', $user->email);}}),
+
+                // Relasi ke tabel users
                 TextInput::make('id_pegawai')
                     ->default(fn () => Pegawai::getIdPegawai())
                     ->label('Id Pegawai')
@@ -68,24 +75,18 @@ class PegawaiResource extends Resource
                     ->placeholder('Masukkan no telepon'),
 
                 TextInput::make('no_rekening')
-
-                    ->required()
                     ->label('No Rekening')
-                    ->placeholder('Masukkan nomor rekening')
-                    ->numeric() // Validasi hanya menerima angka
-                    ->maxLength(50), // Membatasi panjang nomor rekening sesuai kebutuhan
+                    ->required()
+                    ->numeric()
+                    ->maxLength(50)
+                    ->placeholder('Masukkan nomor rekening'),
 
-                // Input untuk Gaji per Hari
                 TextInput::make('gaji_per_hari')
                     ->label('Gaji per Hari')
                     ->required()
                     ->numeric()
                     ->prefix('Rp')
-                    ->placeholder('Masukkan gaji per hari')
-                    ->label('No Rekening')
-                    ->numeric()
-                    ->placeholder('Masukkan no rekening')
-                    ->required(),
+                    ->placeholder('Masukkan gaji per hari'),
 
                 Select::make('bank')
                     ->label('Bank')
@@ -100,7 +101,6 @@ class PegawaiResource extends Resource
                     ])
                     ->searchable()
                     ->required(),
-
             ]);
     }
 
@@ -114,15 +114,10 @@ class PegawaiResource extends Resource
                 TextColumn::make('role')->label('Role'),
                 TextColumn::make('no_telepon')->label('No Telepon'),
                 TextColumn::make('no_rekening')->label('No Rekening'),
-
-                
-                // Format Gaji per Hari tanpa prefix Rp di table
                 TextColumn::make('gaji_per_hari')
                     ->label('Gaji per Hari')
                     ->formatStateUsing(fn ($state) => number_format($state, 0, ',', '.')),
-
                 TextColumn::make('bank')->label('Bank'),
-
             ])
             ->filters([])
             ->actions([

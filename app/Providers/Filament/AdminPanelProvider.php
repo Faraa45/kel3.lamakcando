@@ -39,7 +39,8 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
-                \App\Filament\Widgets\PenjualanPerMenuChart::class,
+                \App\Filament\Widgets\Pen
+                \App\Filament\Widgets\Penjua
             ])
             ->middleware([
                 EncryptCookies::class,

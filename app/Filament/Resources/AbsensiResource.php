@@ -22,9 +22,10 @@ class AbsensiResource extends Resource
 {
     protected static ?string $model = Absensi::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-calendar';
+    protected static ?string $navigationIcon = 'heroicon-o-finger-print';
     protected static ?string $navigationGroup = 'Transaksi';
     protected static ?string $label = 'Absensi';
+    public static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {

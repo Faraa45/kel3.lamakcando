@@ -43,13 +43,14 @@ class PembelianResource extends Resource
 {
     protected static ?string $model = Pembelian::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-archive-box';
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
 
         // merubah nama label menjadi Pembeli
     protected static ?string $navigationLabel = 'Pembelian';
 
     // tambahan buat grup masterdata
     protected static ?string $navigationGroup = 'Transaksi';
+    public static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {

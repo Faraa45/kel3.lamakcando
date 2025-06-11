@@ -38,6 +38,7 @@ class PenggajianResource extends Resource
     protected static ?string $navigationLabel = 'Penggajian';
 
     protected static ?string $navigationGroup = 'Transaksi';
+    public static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -64,7 +65,7 @@ class PenggajianResource extends Resource
 
                                     DatePicker::make('tgl')
                                         ->label('Tanggal')
-                                        ->default(now())
+                                        ->default(now()->toDateString())
                                         ->required()
                                         ->reactive()
                                         ->afterStateUpdated(function ($state, callable $set, Get $get) {
