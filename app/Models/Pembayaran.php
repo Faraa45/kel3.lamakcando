@@ -12,3 +12,4 @@ class Pembayaran extends Model
     protected $table = 'pembayaran'; // Nama tabel eksplisit
 
     protected $guarded = [];
+}

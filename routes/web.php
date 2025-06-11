@@ -6,11 +6,10 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\KeranjangController;
 use App\Http\Controllers\PDFController;
-use App\Http\Controllers\PerusahaanController;
 use App\Http\Controllers\CobaMidtransController;
 use App\Http\Controllers\PengirimanEmailController;
 use App\Http\Controllers\CoaController;
-use App\Http\Controllers\AbsensiController;
+//use App\Http\Controllers\AbsensiController;
 
 
 // Route dasar
@@ -91,8 +90,8 @@ Route::get('/downloadpdfuser', function () {
 })->name('downloadpdf.user');
 
 // Perusahaan
-Route::resource('perusahaan', PerusahaanController::class);
-Route::get('/perusahaan/destroy/{id}', [PerusahaanController::class, 'destroy']);
+// Route::resource('perusahaan', PerusahaanController::class);
+// Route::get('/perusahaan/destroy/{id}', [PerusahaanController::class, 'destroy']);
 
 // COA
 Route::resource('coa', App\Http\Controllers\CoaController::class);
@@ -108,9 +107,9 @@ Route::post('/prosesubahpassword', [App\Http\Controllers\AuthController::class, 
 // prosesubahpassword
 
 //absensi
-Route::resource('absensi', AbsensiController::class);
+//Route::resource('absensi', AbsensiController::class);
 
-Route::resource('penggajian', PenggajianController::class);
+// Route::resource('penggajian', PenggajianController::class);
 
 Route::get('/laporan-penggajian', [\App\Http\Controllers\PDFController::class, 'penggajianPdf']);
 // Halaman welcome (opsional)
@@ -134,7 +133,7 @@ Route::get('/tesrupiah', function() {
 Route::resource('coa', CoaController::class);
 
 // Absensi
-Route::resource('absensi', AbsensiController::class);
+//Route::resource('absensi', AbsensiController::class);
 
 // Middleware khusus costumer
 Route::middleware(\App\Http\Middleware\CostumerMiddleware::class)->group(function () {
