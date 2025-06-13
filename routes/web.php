@@ -82,6 +82,7 @@ Route::get('/lihatriwayat', [App\Http\Controllers\KeranjangController::class, 'l
 
 // Autorefresh
 Route::get('/cek_status_pembayaran_pg', [App\Http\Controllers\KeranjangController::class, 'cek_status_pembayaran_pg']);
+Route::get('/depan', [KeranjangController::class, 'daftarmenu'])->name('depan');
 
 // PDF
 Route::get('/contohpdf', [PDFController::class, 'contohpdf']);
